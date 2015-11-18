@@ -4,7 +4,9 @@ kelp-core
 [**KeLP**][kelp-site] is the Kernel-based Learning Platform (Filice '15) developed in the [Semantic Analytics Group][sag-site] of
 the [University of Roma Tor Vergata][uniroma2-site].
 
-This is the **KeLP** core module and it contains the infrastructure of abstract classes and interfaces to work with KeLP. Furthermore, some implementations of algorithms, kernels and representations are included, to provide a base operative environment. More sophisticated components can be found in various extending modules, such as **kelp-additional-algorithms** and **kelp-additional-kernels**.
+This is the **KeLP** core module and it contains the infrastructure of abstract classes and interfaces to work with KeLP. Furthermore, some implementations of algorithms, kernels and representations are included, to provide a base operative environment. More sophisticated components can be found in various extending modules, such as [kelp-additional-algorithms](https://github.com/SAG-KeLP/kelp-additional-algorithms) and [kelp-additional-kernels](https://github.com/SAG-KeLP/kelp-additional-kernels).
+
+KELP is released as open source software under the Apache 2.0 license and the source code is available on [Github][github].
 
 ###**Core Structures**
 
@@ -103,7 +105,68 @@ It is a kernel operating on instances of _ExamplePair_, i.e., examples naturally
 
 =============
 
-REFERENCES:
+##Including KeLP in your project
+
+If you want to include the core functionalities of **KeLP** you can  easily include it in your [Maven][maven-site] project adding the following repositories to your pom file:
+
+```
+<repositories>
+	<repository>
+			<id>kelp_repo_snap</id>
+			<name>KeLP Snapshots repository</name>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<url>http://sag.art.uniroma2.it:8081/artifactory/kelp-snapshot/</url>
+		</repository>
+		<repository>
+			<id>kelp_repo_release</id>
+			<name>KeLP Stable repository</name>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<url>http://sag.art.uniroma2.it:8081/artifactory/kelp-release/</url>
+		</repository>
+	</repositories>
+```
+
+Then, the [Maven][maven-site] dependency for the kelp-core project is:
+
+```
+<dependency>
+    <groupId>it.uniroma2.sag.kelp</groupId>
+    <artifactId>kelp-core</artifactId>
+    <version>2.0.0</version>
+</dependency>
+```
+
+Alternatively, thanks to the modularity of **KeLP**, you can include one of the following modules that already contains the dependency to kelp-core:
+
+* [kelp-additional-kernels](https://github.com/SAG-KeLP/kelp-additional-kernels): it contains additional kernel functions, such as the Tree Kernels or the Graph Kernels;
+
+* [kelp-additional-algorithms](https://github.com/SAG-KeLP/kelp-additional-algorithms): it contains additional learning algorithms, such as the **KeLP** Java implementation of Liblinear or Online Learning algorithms, such as the Passive Aggressive;
+
+* [kelp-full](https://github.com/SAG-KeLP/kelp-full): it is a complete package of KeLP that contains the entire set of existing modules, i.e. additional  kernel functions and algorithms.
+
+
+=============
+
+REFERENCES
+-------------
 
 (Chang '11) Chih-Chung Chang and Chih-Jen Lin. _LIBSVM: A
  library for support vector machines_. ACM Transactions on Intelligent Systems and Technology, 2:27:1-27:27, 2011. Original code available at [LibSVM][libsvm-site] 
@@ -116,8 +179,20 @@ REFERENCES:
 
 (Shen '03) L. Shen and A. K. Joshi. _An SVM based voting algorithm with application to parse reranking_. In Proc. of CoNLL. 2003
 
+Usefull Links
+-------------
+
+KeLP site: [http://sag.art.uniroma2.it/demo-software/kelp/][kelp-site]
+
+SAG site: [http://sag.art.uniroma2.it][kelp-site]
+
+Source code hosted at GitHub: [https://github.com/SAG-KeLP][github]
+
+
 [sag-site]: http://sag.art.uniroma2.it "SAG site"
 [uniroma2-site]: http://www.uniroma2.it "University of Roma Tor Vergata"
+[maven-site]: http://maven.apache.org "Apache Maven"
 [kelp-site]: http://sag.art.uniroma2.it/demo-software/kelp/ "KeLP website"
 [ejml-site]: https://code.google.com/p/efficient-java-matrix-library/ "EJML site"
 [trove-site]: http://trove.starlight-systems.com/news "TROVE site"
+[github]: https://github.com/SAG-KeLP
