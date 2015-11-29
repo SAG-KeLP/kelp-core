@@ -67,7 +67,7 @@ public class ExampleFactory {
 		int endHeaderIndex = textualRepresentation.indexOf(DELIMITER, beginHeaderIndex + BEGIN_REPRESENTATION.length());
 		String representationHeader = textualRepresentation.substring(beginHeaderIndex + BEGIN_REPRESENTATION.length(),
 				endHeaderIndex);
-		int endRepresentation = textualRepresentation.indexOf(END_REPRESENTATION);
+		int endRepresentation = textualRepresentation.indexOf(END_REPRESENTATION, endHeaderIndex+1);
 		String representationBody = textualRepresentation.substring(endHeaderIndex + 1, endRepresentation).trim();
 		logger.debug("representation header: " + representationHeader);
 		logger.debug("representation body: " + representationBody);
@@ -148,7 +148,8 @@ public class ExampleFactory {
 		String representationRemaining = representationsPart.trim();
 		int representationCount = 0;
 		while (representationRemaining.length() > 0) {
-			int endRepresentationStartIndex = representationRemaining.indexOf(END_REPRESENTATION);
+			int startRepresentationEndIndex = representationRemaining.indexOf(DELIMITER, 1);
+			int endRepresentationStartIndex = representationRemaining.indexOf(END_REPRESENTATION, startRepresentationEndIndex+1);
 			int endRepresentationEndIndex = representationRemaining.indexOf(DELIMITER, endRepresentationStartIndex + 1);
 
 			String representationDescription = representationRemaining.substring(0, endRepresentationEndIndex + 1);
@@ -221,7 +222,7 @@ public class ExampleFactory {
 		Example rightExample = parseExample(rightExampleDescr);
 		ExamplePair pair = new ExamplePair(leftExample, rightExample);
 		if (examplePairDescription.length() > end + END_PAIR.length()) {
-			String pairDirectRepresentations = examplePairDescription.substring(end + 1);
+			String pairDirectRepresentations = examplePairDescription.substring(end + END_PAIR.length());
 			HashMap<String, Representation> representations = parseRepresentations(pairDirectRepresentations);
 			pair.setRepresentations(representations);
 		}
