@@ -102,7 +102,7 @@ public class DatasetReader {
 		Example example;
 		try {
 			example = ExampleFactory.parseExample(nextRow);
-		} catch (ParsingExampleException e) {
+		} catch (Exception e) {
 			throw new ParsingExampleException(e, nextRow);
 		}
 		this.nextRow = this.inputBuffer.readLine();

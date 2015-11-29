@@ -27,7 +27,7 @@ public class ParsingExampleException extends Exception {
 		super(message);
 	}
 
-	public ParsingExampleException(ParsingExampleException e, String nextRow) {
+	public ParsingExampleException(Exception e, String nextRow) {
 		super(e.getMessage());
 		this.exampleString = nextRow;
 	}
