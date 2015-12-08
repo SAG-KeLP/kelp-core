@@ -91,7 +91,7 @@ public class UncrossedPairwiseProductKernel extends KernelOnPairs{
 	@Override
 	public float kernelComputationOverPairs(Example exA1, Example exA2, Example exB1,
 			Example exB2) {
-		float kernelValue = this.baseKernel.innerProduct(exA1, exB1) + this.baseKernel.innerProduct(exA2, exB2);
+		float kernelValue = this.baseKernel.innerProduct(exA1, exB1) * this.baseKernel.innerProduct(exA2, exB2);
 		if(addIntraPairSimProduct){
 			return kernelValue + this.baseKernel.innerProduct(exA1, exA2) * this.baseKernel.innerProduct(exB1, exB2);
 		}
