@@ -208,7 +208,7 @@ public abstract class LibSvmSolver implements BinaryLearningAlgorithm {
 	 * Tolerance of termination criterion
 	 */
 	@JsonIgnore
-	protected static final float eps = 0.001f;
+	protected float eps = 0.001f;
 
 	/**
 	 * A boolean value to apply shrinking
@@ -778,6 +778,20 @@ public abstract class LibSvmSolver implements BinaryLearningAlgorithm {
 		info("\nOptimization finished after #iter = " + iter + "\n");
 
 		return solution;
+	}
+	
+	/**
+	 * @return Get the tolerance of termination criterion
+	 */
+	public float getEps() {
+		return eps;
+	}
+
+	/**
+	 * @param eps tolerance of termination criterion (default 0.001)
+	 */
+	public void setEps(float eps) {
+		this.eps = eps;
 	}
 
 	protected void swap(AlphaStatus[] array, int i, int j) {
