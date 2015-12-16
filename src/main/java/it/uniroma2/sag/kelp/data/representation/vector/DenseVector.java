@@ -43,7 +43,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 public class DenseVector implements Vector {
 	private Logger logger = LoggerFactory.getLogger(DenseVector.class);
 	private static final long serialVersionUID = 1150851329091800382L;
-	public static final String SEPARATOR = " |,|;";// a space or a comma or a semicolumn can
+	public static final String SEPARATOR = " |,|;";// a space or a comma or a semicolon can
 													// separate feature values
 
 	@JsonIgnore
@@ -60,6 +60,13 @@ public class DenseVector implements Vector {
 
 	}
 
+	/**
+	 * Set the values of the vectors according to the input text, which is expected to be
+	 * a sequence of numbers separated by a white space, or a comma, or a semicolon
+	 * 
+	 * @param representationDescription
+	 *            the textual description
+	 */
 	@Override
 	public void setDataFromText(String representationDescription) {
 		// String [] stringFeatures =
