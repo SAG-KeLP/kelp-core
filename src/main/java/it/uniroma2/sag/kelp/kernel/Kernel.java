@@ -70,6 +70,9 @@ public abstract class Kernel {
 	 *         <code>exB</code>
 	 */
 	public final float innerProduct(Example exA, Example exB) {
+		if(exA.getId()==exB.getId() && this.normCache!=null){
+			return this.squaredNorm(exA);	
+		}
 		this.numberOfKernelComputations++;
 		float kernelResult;
 		Example first = exA;
@@ -78,6 +81,7 @@ public abstract class Kernel {
 			first=exB;
 			second = exA;
 		}
+
 		if (this.cache != null) {
 			Float cacheValue = this.cache.getKernelValue(first, second);
 			if(cacheValue != null){
@@ -158,15 +162,14 @@ public abstract class Kernel {
 	 */
 
 	public float squaredNorm(Example example){
-
-		this.numberOfKernelComputations++;
+		
 		if (this.normCache != null) {
-
+			this.numberOfKernelComputations++;
 			Float cacheValue = this.normCache.getSquaredNorm(example);
 			if (cacheValue == null) {
 
 
-				float squaredNorm=this.innerProduct(example, example);
+				float squaredNorm=this.kernelComputation(example, example);
 				this.normCache.setSquaredNormValue(example, squaredNorm);
 				return squaredNorm;
 			}
