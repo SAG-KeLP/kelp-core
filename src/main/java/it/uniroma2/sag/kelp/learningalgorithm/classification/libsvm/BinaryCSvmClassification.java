@@ -108,7 +108,9 @@ public class BinaryCSvmClassification extends LibCSvmSolver implements
 	 * @see it.uniroma2.sag.kelp.learningalgorithm.LearningAlgorithm#duplicate()
 	 */
 	public BinaryCSvmClassification duplicate() {
-		return new BinaryCSvmClassification(kernel, label, cp, cn, fairness);
+		BinaryCSvmClassification copy = new BinaryCSvmClassification(kernel, label, cp, cn, fairness);
+		copy.setEps(eps);
+		return copy;
 	}
 
 	private float[] getCSvmP(Dataset trainingSet) {
