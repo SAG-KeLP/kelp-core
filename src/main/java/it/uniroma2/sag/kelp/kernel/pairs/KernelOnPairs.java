@@ -30,7 +30,7 @@ public abstract class KernelOnPairs extends KernelComposition{
 	protected float kernelComputation(Example exA, Example exB) {
 		
 		if(!(exA instanceof ExamplePair) || !(exB instanceof ExamplePair)){
-			throw new java.lang.IllegalArgumentException("Invalid object: expected two ExamplePairs to compute any kernel over pairs");
+			throw new IllegalArgumentException("Invalid object: expected two ExamplePairs to compute any kernel over pairs");
 		}
 		ExamplePair pairA = (ExamplePair)exA;
 		ExamplePair pairB = (ExamplePair)exB;
