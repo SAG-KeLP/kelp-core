@@ -167,7 +167,7 @@ Alternatively, thanks to the modularity of **KeLP**, you can include one of the 
 =============
 How to cite KeLP
 ----------------
-If you find KeLP usefull in your researches, please cite the following paper:
+If you find KeLP useful in your researches, please cite the following paper:
 
 ```
 @InProceedings{filice-EtAl:2015:ACL-IJCNLP-2015-System-Demonstrations,
