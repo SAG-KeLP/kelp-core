@@ -47,10 +47,41 @@ public abstract class ClusterExample implements Comparable<ClusterExample>, Seri
 	public abstract Example getExample();
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((dist == null) ? 0 : dist.hashCode());
+		result = prime * result + ((example == null) ? 0 : example.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ClusterExample other = (ClusterExample) obj;
+		if (dist == null) {
+			if (other.dist != null)
+				return false;
+		} else if (!dist.equals(other.dist))
+			return false;
+		if (example == null) {
+			if (other.example != null)
+				return false;
+		} else if (!example.toString().equals(other.example.toString()))
+			return false;
+		return true;
+	}
+
+	@Override
 	public int compareTo(ClusterExample arg0) {
 		int res = dist.compareTo(arg0.dist);
 		if (res == 0)
-			return example.toString().compareTo(arg0.toString());
+			return example.toString().compareTo(arg0.example.toString());
 		return res;
 	}
 
