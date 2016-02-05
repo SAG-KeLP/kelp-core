@@ -84,7 +84,8 @@ it models a kernel function that operates on the result produced by another kern
 it models a kernel function that combines other kernel functions.
 
 * _LinearKernelCombination_: it applies a weighted linear combination of kernels. The sum of two kernels corresponds to the concatenation of their respective feature spaces.
-* _KernelMultiplication_: it multiplies the results of different kernels. The product of two kernelscorresponds to the Cartesian products of their feature spaces.
+* _KernelMultiplication_: it multiplies the results of different kernels. The product of two kernels
+corresponds to the Cartesian products of their feature spaces.
 
 **KernelOnPairs:**
 
@@ -179,7 +180,7 @@ REFERENCES
 
 (Shen '03) L. Shen and A. K. Joshi. _An SVM based voting algorithm with application to parse reranking_. In Proc. of CoNLL. 2003
 
-Usefull Links
+Useful Links
 -------------
 
 KeLP site: [http://sag.art.uniroma2.it/demo-software/kelp/][kelp-site]
@@ -196,3 +197,4 @@ Source code hosted at GitHub: [https://github.com/SAG-KeLP][github]
 [ejml-site]: https://code.google.com/p/efficient-java-matrix-library/ "EJML site"
 [trove-site]: http://trove.starlight-systems.com/news "TROVE site"
 [github]: https://github.com/SAG-KeLP
+[libsvm-site]: https://www.csie.ntu.edu.tw/~cjlin/libsvm/
