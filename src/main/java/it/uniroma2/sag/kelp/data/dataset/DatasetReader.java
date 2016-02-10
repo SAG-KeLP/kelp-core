@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Simone Filice and Giuseppe Castellucci and Danilo Croce and Roberto Basili
+ * Copyright 2016 Simone Filice and Giuseppe Castellucci and Danilo Croce and Roberto Basili
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,17 +14,17 @@
  */
 package it.uniroma2.sag.kelp.data.dataset;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+
 import it.uniroma2.sag.kelp.data.example.Example;
 import it.uniroma2.sag.kelp.data.example.ExampleFactory;
 import it.uniroma2.sag.kelp.data.example.ParsingExampleException;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.zip.GZIPInputStream;
+import it.uniroma2.sag.kelp.utils.FileUtils;
 
 /**
  * A utility class to read dataset in the platform format.
@@ -47,17 +47,19 @@ public class DatasetReader {
 
 	protected BufferedReader openBufferedReader(String filename) throws IOException,
 			FileNotFoundException, UnsupportedEncodingException {
-		InputStreamReader reader = null;
-		GZIPInputStream gzis = null;
-		if (filename.endsWith(".gz")) {
-			gzis = new GZIPInputStream(new FileInputStream(filename));
-			reader = new InputStreamReader(gzis, "UTF8");
-		} else {
-			reader = new InputStreamReader(new FileInputStream(filename),
-					"UTF8");
-		}
+		
+		InputStream reader = FileUtils.createInputStream(filename);
+//		InputStreamReader reader = null;
+//		GZIPInputStream gzis = null;
+//		if (filename.endsWith(".gz")) {
+//			gzis = new GZIPInputStream(new FileInputStream(filename));
+//			reader = new InputStreamReader(gzis, "UTF8");
+//		} else {
+//			reader = new InputStreamReader(new FileInputStream(filename),
+//					"UTF8");
+//		}
 
-		return new BufferedReader(reader);
+		return new BufferedReader(new InputStreamReader(reader, "UTF8"));
 	}
 
 	/**
