@@ -15,13 +15,10 @@
 
 package it.uniroma2.sag.kelp.kernel;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,6 +30,7 @@ import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import it.uniroma2.sag.kelp.data.example.Example;
 import it.uniroma2.sag.kelp.kernel.cache.KernelCache;
 import it.uniroma2.sag.kelp.kernel.cache.SquaredNormCache;
+import it.uniroma2.sag.kelp.utils.FileUtils;
 
 
 /**
@@ -259,15 +257,9 @@ public abstract class Kernel {
 	public static void save(Kernel kernel, String outputFilePath)
 			throws FileNotFoundException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
-		if (outputFilePath.endsWith(".gz")) {
-			GZIPOutputStream zip = new GZIPOutputStream(new FileOutputStream(
-					new File(outputFilePath)));
-			mapper.writeValue(zip, kernel);
-		} else {
-			mapper.writeValue(new File(outputFilePath), kernel);
-		}
-
+		OutputStreamWriter out = new OutputStreamWriter(FileUtils.createOutputStream(outputFilePath), "utf8");
+		mapper.writeValue(out, kernel);
+		out.close();
 	}
 
 	/**
@@ -284,14 +276,10 @@ public abstract class Kernel {
 	public static Kernel load(String inputFilePath)
 			throws FileNotFoundException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
-		if (inputFilePath.endsWith(".gz")) {
-			GZIPInputStream zip = new GZIPInputStream(new FileInputStream(
-					new File(inputFilePath)));
-			return mapper.readValue(zip, Kernel.class);
-		} else {
-			return mapper.readValue(new File(inputFilePath), Kernel.class);
-		}
+		InputStreamReader inS = new InputStreamReader(FileUtils.createInputStream(inputFilePath), "utf8");
+		Kernel kernel = mapper.readValue(inS, Kernel.class);
+		inS.close();
+		return kernel;
 	}
 
 

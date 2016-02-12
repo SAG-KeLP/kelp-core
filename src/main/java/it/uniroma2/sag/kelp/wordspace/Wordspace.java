@@ -16,15 +16,14 @@
 package it.uniroma2.sag.kelp.wordspace;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
 
 import org.ejml.data.DenseMatrix64F;
 import org.slf4j.Logger;
@@ -36,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import it.uniroma2.sag.kelp.data.representation.Vector;
 import it.uniroma2.sag.kelp.data.representation.vector.DenseVector;
+import it.uniroma2.sag.kelp.utils.FileUtils;
 
 /**
  * This is an implementation of a wordspace used for associating words to
@@ -53,9 +53,7 @@ import it.uniroma2.sag.kelp.data.representation.vector.DenseVector;
  */
 @JsonTypeName("wordspace")
 public class Wordspace implements WordspaceI {
-
 	private final static Logger logger = LoggerFactory.getLogger(Wordspace.class);
-
 	private String matrixPath;
 
 	/**
@@ -135,15 +133,9 @@ public class Wordspace implements WordspaceI {
 	 * @throws IOException
 	 */
 	private void populate(String filename) throws IOException {
-		BufferedReader br = null;
-		GZIPInputStream gzis = null;
-		if (filename.endsWith(".gz")) {
-			gzis = new GZIPInputStream(new FileInputStream(filename));
-			InputStreamReader reader = new InputStreamReader(gzis, "UTF8");
-			br = new BufferedReader(reader);
-		} else {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF8"));
-		}
+		InputStream createInputStream = FileUtils.createInputStream(filename);		
+		BufferedReader br = new BufferedReader(new InputStreamReader(createInputStream, "utf8"));
+		
 		String line;
 		ArrayList<String> split;
 		String label;
@@ -180,11 +172,8 @@ public class Wordspace implements WordspaceI {
 			addWordVector(label, denseFeatureVector);
 
 		}
-		if (filename.endsWith(".gz")) {
-			gzis.close();
-		}
+		createInputStream.close();
 		br.close();
-
 	}
 
 	private ArrayList<String> mySplit(String s) {

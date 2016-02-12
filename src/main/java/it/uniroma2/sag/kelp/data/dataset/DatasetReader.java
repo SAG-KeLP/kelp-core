@@ -47,19 +47,8 @@ public class DatasetReader {
 
 	protected BufferedReader openBufferedReader(String filename) throws IOException,
 			FileNotFoundException, UnsupportedEncodingException {
-		
 		InputStream reader = FileUtils.createInputStream(filename);
-//		InputStreamReader reader = null;
-//		GZIPInputStream gzis = null;
-//		if (filename.endsWith(".gz")) {
-//			gzis = new GZIPInputStream(new FileInputStream(filename));
-//			reader = new InputStreamReader(gzis, "UTF8");
-//		} else {
-//			reader = new InputStreamReader(new FileInputStream(filename),
-//					"UTF8");
-//		}
-
-		return new BufferedReader(new InputStreamReader(reader, "UTF8"));
+		return new BufferedReader(new InputStreamReader(reader, "utf8"));
 	}
 
 	/**
