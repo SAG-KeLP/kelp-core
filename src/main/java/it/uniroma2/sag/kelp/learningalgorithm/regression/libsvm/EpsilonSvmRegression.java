@@ -87,13 +87,6 @@ public class EpsilonSvmRegression extends LibCSvmSolver implements
 		this.setLabel(label);
 	}
 	
-	public EpsilonSvmRegression(Kernel kernel, Label label, float cp, float cn, float pReg) {
-		super(kernel, cp, cn);
-		this.regressor = new UnivariateKernelMachineRegressionFunction();
-		this.pReg = pReg;
-		this.setLabel(label);
-	}
-
 	public EpsilonSvmRegression() {
 		super();
 		this.regressor = new UnivariateKernelMachineRegressionFunction();
@@ -106,8 +99,7 @@ public class EpsilonSvmRegression extends LibCSvmSolver implements
 	 */
 	@Override
 	public EpsilonSvmRegression duplicate() {
-		return new EpsilonSvmRegression(getKernel(), getLabel(), getCp(), getCn(),
-				getpReg());
+		return new EpsilonSvmRegression(getKernel(), getLabel(), getCp(), getpReg());
 	}
 
 	/*
