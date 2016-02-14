@@ -38,9 +38,9 @@ The following actual implementations of Learning Algorithms are included:
 
 **CLASSIFICATION ALGORITHMS:**
 
-* _BinaryCSvmClassification_: it is the KeLP implemention of C-Support Vector Machine learning algorithm. It is a learning algorithm for binary classification and it relies on kernel functions. It is a porting of the LibSVM implementation (Chang '11)
-* _BinaryNuSvmClassification_: it is the KeLP implemention of &nu;-Support Vector Machine learning algorithm. It is a learning algorithm for binary classification and it relies on kernel functions. It is a porting of the LibSVM implementation (Chang '11)
-* _OneClassSvmClassification_: the KeLP implemention of One-Class Support Vector Machine learning algorithm. It is a learning algorithm for estimating the Support of a High-Dimensional Distribution and it relies on kernel functions. The model is acquired only by considering positive examples. It is useful in anomaly detection (a.k.a. novelty detection). It is a porting of the LibSVM implementation (Chang '11)
+* _BinaryCSvmClassification_: it is the KeLP implementation of C-Support Vector Machine learning algorithm. It is a learning algorithm for binary classification and it relies on kernel functions. It is a porting of the LibSVM implementation (Chang '11)
+* _BinaryNuSvmClassification_: it is the KeLP implementation of &nu;-Support Vector Machine learning algorithm. It is a learning algorithm for binary classification and it relies on kernel functions. It is a porting of the LibSVM implementation (Chang '11)
+* _OneClassSvmClassification_: the KeLP implementation of One-Class Support Vector Machine learning algorithm. It is a learning algorithm for estimating the Support of a High-Dimensional Distribution and it relies on kernel functions. The model is acquired only by considering positive examples. It is useful in anomaly detection (a.k.a. novelty detection). It is a porting of the LibSVM implementation (Chang '11)
 
 **REGRESSION ALGORITHMS:**
 
@@ -48,7 +48,7 @@ The following actual implementations of Learning Algorithms are included:
 
 **CLUSTERING ALGORITHMS:**
 
-* _KernelBasedKMeansEngine_: it is the implemetation of the clustering algorithm described in (Kulis '09). It is basically a kernel-based extention of the standard k-mean clustering algorithm.
+* _KernelBasedKMeansEngine_: it is the implementation of the clustering algorithm described in (Kulis '09). It is basically a kernel-based extention of the standard k-mean clustering algorithm.
 
 
 **META ALGORITHMS:**
