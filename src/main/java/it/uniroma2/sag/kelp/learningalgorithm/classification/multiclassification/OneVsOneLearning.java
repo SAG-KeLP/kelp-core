@@ -38,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
  * It is a meta algorithm that operates by applying a One-Vs-One strategy over the base 
  * learning algorithm which is intended to be a binary learner.
  * This meta-algorithms will learn N*(N-1)/2 classifiers, by comparing each class with all the others
- * separately. The resulting classifier applies a a voting stratefy to perform the final decision.
+ * separately. The resulting classifier applies a a voting strategy to perform the final decision.
  * (N is the number of classes in the dataset)
  * 
  * <p>
