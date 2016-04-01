@@ -121,15 +121,7 @@ public class BinaryClassificationEvaluator extends Evaluator {
 	 */
 	@Override
 	public void clear() {
-		total = 0;
-		correct = 0;
-		accuracy = 0.0f;
-		truePositivePredicted = 0;
-		predictedPositive = 0;
-		precision = 0.0f;
-		recall = 0.0f;
-		f1 = 0.0f;
-		this.computed=false;
+		initializeCounters();
 	}
 
 	/**
