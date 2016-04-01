@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Simone Filice and Giuseppe Castellucci and Danilo Croce and Roberto Basili
+ * Copyright 2014-2016 Simone Filice and Giuseppe Castellucci and Danilo Croce and Roberto Basili
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,6 +30,9 @@ import java.io.IOException;
  * @author Simone Filice
  */
 public class LibsvmDatasetReader extends DatasetReader{
+	
+	public static final String COMMENT_SEPARATOR = "#";
+	public static final String COMMENT_REPRESENTATION_NAME = "comment";
 	
 	private enum LibsvmTask{
 		CLASSIFICATION,
@@ -84,8 +87,14 @@ public class LibsvmDatasetReader extends DatasetReader{
 			label = new NumericLabel(regressionProperty, Float.parseFloat(nextRow.substring(0, endLabelIndex)));
 		}
 		
+		String text = nextRow.substring(endLabelIndex+1);
+		
+		int separatorIndex = text.indexOf(COMMENT_SEPARATOR);
+		if(separatorIndex!=-1){
+			text = text.substring(0, separatorIndex);
+		}
 		SparseVector vector = new SparseVector();
-		vector.setDataFromText(nextRow.substring(endLabelIndex+1));
+		vector.setDataFromText(text);
 		example.addLabel(label);
 		example.addRepresentation(representationName, vector);
 		this.nextRow = this.inputBuffer.readLine();
