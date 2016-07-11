@@ -33,15 +33,15 @@ import java.util.List;
  */
 public class MulticlassClassificationEvaluator extends Evaluator {
 	private List<Label> labels;
-	private TObjectFloatHashMap<Label> correctCounter = new TObjectFloatHashMap<Label>();
-	private TObjectFloatHashMap<Label> predictedCounter = new TObjectFloatHashMap<Label>();
-	private TObjectFloatHashMap<Label> toBePredictedCounter = new TObjectFloatHashMap<Label>();
+	protected TObjectFloatHashMap<Label> correctCounter = new TObjectFloatHashMap<Label>();
+	protected TObjectFloatHashMap<Label> predictedCounter = new TObjectFloatHashMap<Label>();
+	protected TObjectFloatHashMap<Label> toBePredictedCounter = new TObjectFloatHashMap<Label>();
 
 	private TObjectFloatHashMap<Label> precisions = new TObjectFloatHashMap<Label>();
 	private TObjectFloatHashMap<Label> recalls = new TObjectFloatHashMap<Label>();
 	private TObjectFloatHashMap<Label> f1s = new TObjectFloatHashMap<Label>();
 
-	private int total, correct;
+	protected int total, correct;
 	private float accuracy, overallPrecision, overallRecall, overallF1;
 
 	/**
