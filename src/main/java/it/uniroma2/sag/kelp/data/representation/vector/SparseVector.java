@@ -15,6 +15,7 @@
 
 package it.uniroma2.sag.kelp.data.representation.vector;
 
+import gnu.trove.TCollections;
 import gnu.trove.iterator.TIntFloatIterator;
 import gnu.trove.map.TIntFloatMap;
 import gnu.trove.map.TIntObjectMap;
@@ -55,6 +56,11 @@ public class SparseVector implements Vector {
 	private static TObjectIntMap<String> fromWordToInt = new TObjectIntHashMap<String>(
 			INITIAL_SIZE);
 	private static int wordCounter = Integer.MIN_VALUE;
+	
+	static {
+		fromIntToWord = TCollections.synchronizedMap(fromIntToWord);
+		fromWordToInt = TCollections.synchronizedMap(fromWordToInt);
+	}
 
 	@JsonIgnore
 	private TIntFloatMap vector;
@@ -345,21 +351,23 @@ public class SparseVector implements Vector {
 	 * @param value the value of the feature
 	 */
 	public void setFeatureValue(String featureName, float value){
-		int index = fromWordToInt.get(featureName);
-
-		logger.debug(featureName);
-		logger.debug(Integer.toString(index));
-
-		if (index == 0) {
-			fromWordToInt.put(featureName, wordCounter);
-			fromIntToWord.put(wordCounter, featureName);
-			this.vector.put(wordCounter, value);
-			wordCounter++;
-			if (wordCounter == 0) {
+		synchronized (fromWordToInt) {
+			int index = fromWordToInt.get(featureName);
+	
+			logger.debug(featureName);
+			logger.debug(Integer.toString(index));
+	
+			if (index == 0) {
+				fromWordToInt.put(featureName, wordCounter);
+				fromIntToWord.put(wordCounter, featureName);
+				this.vector.put(wordCounter, value);
 				wordCounter++;
+				if (wordCounter == 0) {
+					wordCounter++;
+				}
+			} else {
+				this.vector.put(index, value);
 			}
-		} else {
-			this.vector.put(index, value);
 		}
 	}
 	
