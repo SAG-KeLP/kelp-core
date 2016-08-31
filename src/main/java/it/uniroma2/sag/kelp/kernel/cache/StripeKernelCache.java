@@ -15,6 +15,7 @@
 
 package it.uniroma2.sag.kelp.kernel.cache;
 
+import gnu.trove.map.hash.TLongFloatHashMap;
 import gnu.trove.map.hash.TLongIntHashMap;
 import it.uniroma2.sag.kelp.data.dataset.Dataset;
 import it.uniroma2.sag.kelp.data.example.Example;
@@ -99,6 +100,8 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 	 */
 	private int matrixColumnIndex;
 
+	private TLongFloatHashMap normCache;
+
 	/**
 	 * @param dataset
 	 *            The cache is initialized with a number of rows (and columns)
@@ -139,6 +142,8 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 
 		this.rowDict = new TLongIntHashMap();
 		this.columnDict = new TLongIntHashMap();
+
+		this.normCache = new TLongFloatHashMap();
 	}
 
 	/**
@@ -198,7 +203,9 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 		return buffer[rowId][colId];
 	}
 
-	private long lastAddedIndexRow=-1;
+	private long lastAddedIndexRow = -1;
+	private long lastAddedIndexColumn = -1;
+	private long previousAddedIndexColumn = -1;
 
 	@Override
 	public void setKernelValue(Example exA, Example exB, float value) {
@@ -207,13 +214,25 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 		long indexA = exA.getId();
 		long indexB = exB.getId();
 
-		if (indexA != lastAddedIndexRow) {
+		if (indexB == lastAddedIndexRow || indexB == previousAddedIndexColumn) {
+			indexB = exA.getId();
+			indexA = exB.getId();
+		} else if (rowDict.containsKey(indexB)) {
 			indexB = exA.getId();
 			indexA = exB.getId();
 		}
+
+		if (indexA == indexB) {
+			this.normCache.put(indexA, value);
+			lastAddedIndexRow = indexA;
+			return;
+		}
+
 		// System.out.println(indexA + " " + rowDict.containsKey(indexA) +
 		// "\t-\t"
 		// + indexB + " " + rowDict.containsKey(indexB));
+
+		// System.out.println(indexA + "\t" + indexB + "\t" + rowDict.size());
 
 		int rowId;
 		int colId;
@@ -226,9 +245,8 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 			// it is
 			// expected to find a free column in the matrix.
 			if (matrixColumnIndex == numberOfColumns) {
-				info("The example " + indexB
-						+ " cannot be stored because the matrix (of size "
-						+ numberOfColumns + " is full");
+				info("The example " + indexB + " cannot be stored because the matrix (of size " + numberOfColumns
+						+ " is full");
 				return;
 			}
 			// Add to the dict a mapping between the example and the row in the
@@ -249,7 +267,7 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 		if (rowDict.containsKey(indexA)) {
 			rowId = this.rowDict.get(indexA);
 			this.buffer[rowId][colId] = value;
-		}// Otherwise, a new row must be added. Note: do not add row for K_ii
+		} // Otherwise, a new row must be added. Note: do not add row for K_ii
 		else if (indexA != indexB) {
 			// If there are no free rows, the oldest element (i.e. the first
 			// element in addedFIFOItems) is removed and the corresponding row
@@ -278,6 +296,8 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 			this.buffer[rowId][colId] = value;
 		}
 
+		previousAddedIndexColumn = lastAddedIndexColumn;
+		lastAddedIndexColumn = indexB;
 		lastAddedIndexRow = indexA;
 
 	}
@@ -303,8 +323,11 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 			for (int columnId = 0; columnId < buffer[rowId].length; columnId++)
 				buffer[rowId][columnId] = INVALID_KERNEL_VALUE;
 		}
-		
-		this.lastAddedIndexRow=-1;
+
+		this.lastAddedIndexRow = -1;
+		this.lastAddedIndexColumn = -1;
+		this.previousAddedIndexColumn = -1;
+		this.normCache.clear();
 	}
 
 	@Override
@@ -312,6 +335,14 @@ public class StripeKernelCache extends KernelCache implements Serializable {
 
 		long indexA = exA.getId();
 		long indexB = exB.getId();
+
+		if (indexA == indexB) {
+			if (this.normCache.containsKey(indexA))
+				return this.normCache.get(indexA);
+			else {
+				return null;
+			}
+		}
 
 		float res = search(indexA, indexB);
 		if (Float.isNaN(res))
