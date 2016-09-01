@@ -42,7 +42,7 @@ public abstract class KernelCache {
 	 * 
 	 * @param exA the first example
 	 * @param exB the second example
-	 * @return the kernel similarity, <code>null<\code> if a cache miss occurs
+	 * @return the kernel similarity, <code>null</code> if a cache miss occurs
 	 */
 	public Float getKernelValue(Example exA, Example exB){
 		Float value=this.getStoredKernelValue(exA, exB);
@@ -59,7 +59,7 @@ public abstract class KernelCache {
 	 * 
 	 * @param exA the first example
 	 * @param exB the second example
-	 * @return the kernel similarity, <code>null<\code> if a cache miss occurs
+	 * @return the kernel similarity, <code>null</code> if a cache miss occurs
 	 */
 	protected abstract Float getStoredKernelValue(Example exA, Example exB);
 
