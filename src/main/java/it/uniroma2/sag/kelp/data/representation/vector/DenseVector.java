@@ -17,6 +17,7 @@ package it.uniroma2.sag.kelp.data.representation.vector;
 
 import it.uniroma2.sag.kelp.data.representation.Representation;
 import it.uniroma2.sag.kelp.data.representation.Vector;
+import it.uniroma2.sag.kelp.data.representation.vector.exception.VectorOperationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -258,7 +259,7 @@ public class DenseVector implements Vector {
 	}
 	
 	@Override
-	public float euclideanDistance(Vector vector) {
+	public float euclideanDistance(Vector vector) throws VectorOperationException {
 		double a[] = this.featuresValues.data;
 		double b[] = ((DenseVector) vector).featuresValues.data;
 
@@ -267,6 +268,14 @@ public class DenseVector implements Vector {
 		for (int i = 0; i < a.length; i++) {
 			tmp = (float) (a[i] - b[i]);
 			res += tmp * tmp;
+		}
+		if (res< 0.0f && res >= SparseVector.threshold){
+			return 0.0f;
+		}
+		
+		if (res < SparseVector.threshold) {
+			throw new VectorOperationException(
+					"Trying to compute the square root of a negative number in the euclidean distance computation", vector, this);
 		}
 		return (float) Math.sqrt(res);
 	}

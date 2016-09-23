@@ -25,6 +25,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import it.uniroma2.sag.kelp.data.representation.Representation;
 import it.uniroma2.sag.kelp.data.representation.Vector;
+import it.uniroma2.sag.kelp.data.representation.vector.exception.VectorOperationException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,12 +52,11 @@ public class SparseVector implements Vector {
 	private static final int INITIAL_SIZE = 10000;
 	private static final String FEATURE_SEPARATOR = " ";
 	private static final String NAME_VALUE_SEPARATOR = ":";
-	private static TIntObjectMap<String> fromIntToWord = new TIntObjectHashMap<String>(
-			INITIAL_SIZE);
-	private static TObjectIntMap<String> fromWordToInt = new TObjectIntHashMap<String>(
-			INITIAL_SIZE);
+	private static TIntObjectMap<String> fromIntToWord = new TIntObjectHashMap<String>(INITIAL_SIZE);
+	private static TObjectIntMap<String> fromWordToInt = new TObjectIntHashMap<String>(INITIAL_SIZE);
 	private static int wordCounter = Integer.MIN_VALUE;
-	
+	public static final float threshold = -0.00005f;
+
 	static {
 		fromIntToWord = TCollections.synchronizedMap(fromIntToWord);
 		fromWordToInt = TCollections.synchronizedMap(fromWordToInt);
@@ -82,11 +82,9 @@ public class SparseVector implements Vector {
 	}
 
 	@Override
-	public void setDataFromText(String representationDescription)
-			throws IOException {
+	public void setDataFromText(String representationDescription) throws IOException {
 
-		String[] feats = representationDescription.trim().split(
-				FEATURE_SEPARATOR);
+		String[] feats = representationDescription.trim().split(FEATURE_SEPARATOR);
 		if (feats[0].equals("")) {
 			return;
 		}
@@ -104,8 +102,7 @@ public class SparseVector implements Vector {
 			valueTmp = feature.substring(separatorIndex + 1);
 			Float val = Float.parseFloat(valueTmp);
 			if (val.isNaN()) {
-				logger.warn("NaN value in representation: "
-						+ representationDescription);
+				logger.warn("NaN value in representation: " + representationDescription);
 			}
 			value = val.floatValue();
 
@@ -120,8 +117,7 @@ public class SparseVector implements Vector {
 		for (TIntFloatIterator it = this.vector.iterator(); it.hasNext();) {
 			it.advance();
 			String name = fromIntToWord.get(it.key());
-			description.append(name + NAME_VALUE_SEPARATOR
-					+ Float.toString(it.value()) + FEATURE_SEPARATOR);
+			description.append(name + NAME_VALUE_SEPARATOR + Float.toString(it.value()) + FEATURE_SEPARATOR);
 		}
 		return description.toString();
 	}
@@ -176,8 +172,7 @@ public class SparseVector implements Vector {
 			}
 			return sum;
 		}
-		throw new IllegalArgumentException(
-				"Expected a SparseVector to performe the innerProduct");
+		throw new IllegalArgumentException("Expected a SparseVector to performe the innerProduct");
 	}
 
 	@Override
@@ -199,8 +194,7 @@ public class SparseVector implements Vector {
 			}
 
 		} else {
-			throw new IllegalArgumentException(
-					"Expected a SparseVector to performe add operation");
+			throw new IllegalArgumentException("Expected a SparseVector to performe add operation");
 		}
 	}
 
@@ -214,8 +208,7 @@ public class SparseVector implements Vector {
 				this.vector.put(it.key(), thisValue + coeff * it.value());
 			}
 		} else {
-			throw new IllegalArgumentException(
-					"Expected a SparseVector to performe add operation");
+			throw new IllegalArgumentException("Expected a SparseVector to performe add operation");
 		}
 	}
 
@@ -271,27 +264,31 @@ public class SparseVector implements Vector {
 		return res;
 	}
 
-	
 	/**
-	 * Merge this vector with <code>vector</code> (it is like a vector concatenation)
-	 * If V1 is the space where this vector lies and V2 is the space where <code>vector</code> lies, 
-	 * then the resulting vector lies in V1xV2
+	 * Merge this vector with <code>vector</code> (it is like a vector
+	 * concatenation) If V1 is the space where this vector lies and V2 is the
+	 * space where <code>vector</code> lies, then the resulting vector lies in
+	 * V1xV2
 	 * 
 	 * <p>
-	 * NOTE: this is not a sum because even if some feature names are shared between the two vectors,
-	 * those will be considered different dimensions (a prefix is added to all feature names of <code>vector</code>)
+	 * NOTE: this is not a sum because even if some feature names are shared
+	 * between the two vectors, those will be considered different dimensions (a
+	 * prefix is added to all feature names of <code>vector</code>)
 	 * 
-	 * @param vector the input vector to be merged with this
-	 * @param coefficient a scaling factor for <code>vector</code> 
-	 * @param newDimensionPrefix the prefix to be added to all the feature names of <code>vector</code>
-	 * during the merging process (<code>vector</code> is not modified)
+	 * @param vector
+	 *            the input vector to be merged with this
+	 * @param coefficient
+	 *            a scaling factor for <code>vector</code>
+	 * @param newDimensionPrefix
+	 *            the prefix to be added to all the feature names of
+	 *            <code>vector</code> during the merging process
+	 *            (<code>vector</code> is not modified)
 	 */
-	public void merge(Vector vector, float coefficient,
-			String newDimensionPrefix) {
+	public void merge(Vector vector, float coefficient, String newDimensionPrefix) {
 		Map<Object, Number> activeFeats = vector.getActiveFeatures();
 		for (Entry<Object, Number> entry : activeFeats.entrySet()) {
 			String dimension = newDimensionPrefix + "_" + entry.getKey().toString();
-			
+
 			float value = coefficient * entry.getValue().floatValue();
 
 			this.setFeatureValue(dimension, value);
@@ -302,21 +299,23 @@ public class SparseVector implements Vector {
 	public void pointWiseProduct(Vector vector) {
 		if (vector instanceof SparseVector) {
 			SparseVector that = (SparseVector) vector;
-			// A list of integer hash to be removed by the map after the pointwise product operation
+			// A list of integer hash to be removed by the map after the
+			// pointwise product operation
 			ArrayList<Integer> remove = new ArrayList<Integer>();
 			for (TIntFloatIterator it = this.vector.iterator(); it.hasNext();) {
 				it.advance();
 				float myValue = it.value();
 				float itsValue = that.getVector().get(it.key());
-				float newValue = myValue*itsValue;
-				// if the new value is zero and this vector contained that element
+				float newValue = myValue * itsValue;
+				// if the new value is zero and this vector contained that
+				// element
 				// then add the current key to remove
 				if (newValue == 0.0f && this.vector.containsKey(it.key())) {
 					remove.add(it.key());
 				} else {
 					// if the new value is different from zero
 					// then add it to the map
-					if (newValue!=0.0f)
+					if (newValue != 0.0f)
 						this.vector.put(it.key(), newValue);
 				}
 			}
@@ -325,38 +324,39 @@ public class SparseVector implements Vector {
 				this.vector.remove(i);
 
 		} else {
-			throw new IllegalArgumentException(
-					"Expected a SparseVector to performe add operation");
+			throw new IllegalArgumentException("Expected a SparseVector to performe add operation");
 		}
 	}
 
 	@Override
 	public SparseVector copyVector() {
 		SparseVector copy = new SparseVector();
-		
+
 		try {
 			copy.setDataFromText(this.getTextFromData());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return this.getZeroVector();
 		}
-		
+
 		return copy;
 	}
 
 	/**
 	 * Sets the value of a feature
 	 * 
-	 * @param featureName the name of the feature
-	 * @param value the value of the feature
+	 * @param featureName
+	 *            the name of the feature
+	 * @param value
+	 *            the value of the feature
 	 */
-	public void setFeatureValue(String featureName, float value){
+	public void setFeatureValue(String featureName, float value) {
 		synchronized (fromWordToInt) {
 			int index = fromWordToInt.get(featureName);
-	
+
 			logger.debug(featureName);
 			logger.debug(Integer.toString(index));
-	
+
 			if (index == 0) {
 				fromWordToInt.put(featureName, wordCounter);
 				fromIntToWord.put(wordCounter, featureName);
@@ -370,27 +370,30 @@ public class SparseVector implements Vector {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the value associated to a feature
 	 * 
-	 * @param featureName the identifier of the feature
+	 * @param featureName
+	 *            the identifier of the feature
 	 * @return the feature value
 	 */
-	public float getFeatureValue(String featureName){
+	public float getFeatureValue(String featureName) {
 		int index = fromWordToInt.get(featureName);
 		return this.getFeatureValue(index);
 	}
-	
+
 	/**
 	 * Increments the value associated to a feature
 	 * 
-	 * @param featureName the identifier of the feature
-	 * @param valueIncrement the increment
+	 * @param featureName
+	 *            the identifier of the feature
+	 * @param valueIncrement
+	 *            the increment
 	 */
-	public void incrementFeature(String featureName, float valueIncrement){
+	public void incrementFeature(String featureName, float valueIncrement) {
 		int index = fromWordToInt.get(featureName);
-		if(index==0){
+		if (index == 0) {
 			fromWordToInt.put(featureName, wordCounter);
 			fromIntToWord.put(wordCounter, featureName);
 			this.vector.put(wordCounter, valueIncrement);
@@ -398,7 +401,7 @@ public class SparseVector implements Vector {
 			if (wordCounter == 0) {
 				wordCounter++;
 			}
-		}else{
+		} else {
 			float newValue = this.getFeatureValue(index) + valueIncrement;
 			this.vector.put(index, newValue);
 		}
@@ -406,32 +409,46 @@ public class SparseVector implements Vector {
 
 	@Override
 	public void setFeatureValue(Object featureIdentifier, float value) {
-		if(!(featureIdentifier instanceof String)){
+		if (!(featureIdentifier instanceof String)) {
 			throw new IllegalArgumentException("The argument featureIdentifier must be a String");
 		}
-		this.setFeatureValue((String)featureIdentifier, value);
+		this.setFeatureValue((String) featureIdentifier, value);
 	}
 
 	@Override
 	public float getFeatureValue(Object featureIdentifier) {
-		if(!(featureIdentifier instanceof String)){
+		if (!(featureIdentifier instanceof String)) {
 			throw new IllegalArgumentException("The argument featureIdentifier must be a String");
 		}
-		return this.getFeatureValue((String)featureIdentifier);
+		return this.getFeatureValue((String) featureIdentifier);
 	}
 
 	@Override
-	public float euclideanDistance(Vector vector) {
+	public float euclideanDistance(Vector vector) throws VectorOperationException {
 		float normA = vector.getSquaredNorm();
 		float normB = this.getSquaredNorm();
 
-		return (float) Math.sqrt(normA + normB - 2 * vector.innerProduct(this));
+		float factor = normA + normB - 2 * vector.innerProduct(this);
+		// if factor < 0.0f it means that the two vectors are the same
+		// only a rounding problem makes it slightly less than 0.
+		// In this case, the euclidean distance should be 0
+		if (factor < 0.0f && factor >= threshold) {
+			logger.debug("The value for the euclidean distance is slightly less than 0.");
+			return 0.0f;
+		}
+
+		if (factor < threshold)
+			throw new VectorOperationException(
+					"Trying to compute the square root of a negative number in the euclidean distance computation", vector, this);
+
+		return (float) Math.sqrt(factor);
 	}
 
 	@Override
 	public boolean isCompatible(Representation rep) {
-		if (!( rep instanceof SparseVector)){
-			logger.error("incompatible representations: " + this.getClass().getSimpleName() + " vs " + rep.getClass().getSimpleName());
+		if (!(rep instanceof SparseVector)) {
+			logger.error("incompatible representations: " + this.getClass().getSimpleName() + " vs "
+					+ rep.getClass().getSimpleName());
 			return false;
 		}
 		return true;

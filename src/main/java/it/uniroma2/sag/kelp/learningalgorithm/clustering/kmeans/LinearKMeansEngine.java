@@ -33,6 +33,7 @@ import it.uniroma2.sag.kelp.data.dataset.selector.ExampleSelector;
 import it.uniroma2.sag.kelp.data.dataset.selector.FirstExamplesSelector;
 import it.uniroma2.sag.kelp.data.example.Example;
 import it.uniroma2.sag.kelp.data.representation.Vector;
+import it.uniroma2.sag.kelp.data.representation.vector.exception.VectorOperationException;
 import it.uniroma2.sag.kelp.learningalgorithm.clustering.ClusteringAlgorithm;
 
 /**
@@ -100,8 +101,10 @@ public class LinearKMeansEngine implements ClusteringAlgorithm {
 	 * @param example
 	 * @param cluster
 	 * @return
+	 * @throws VectorOperationException
+	 * @throws Exception
 	 */
-	private float calculateDistance(Example example, LinearKMeansCluster cluster) {
+	private float calculateDistance(Example example, LinearKMeansCluster cluster) throws VectorOperationException {
 
 		Vector exampleVector = (Vector) example.getRepresentation(representationName);
 
@@ -178,7 +181,15 @@ public class LinearKMeansEngine implements ClusteringAlgorithm {
 				int targetCluster = -1;
 
 				for (int clusterId = 0; clusterId < k; clusterId++) {
-					float d = calculateDistance(example, (LinearKMeansCluster) resClusters.get(clusterId));
+					float d = 0.0f;
+					try {
+						d = calculateDistance(example, (LinearKMeansCluster) resClusters.get(clusterId));
+					} catch (VectorOperationException e) {
+						e.printStackTrace();
+						logger.error("Error in computing distance between vectors");
+						logger.error(e.getFirst().getTextFromData());
+						logger.error(e.getSecond().getTextFromData());
+					}
 
 					logger.debug("Distance of " + example.getId() + " from cluster " + clusterId + ":\t" + d);
 

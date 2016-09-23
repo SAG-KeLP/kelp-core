@@ -19,6 +19,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import it.uniroma2.sag.kelp.data.representation.vector.exception.VectorOperationException;
+
 /**
  * It is a Vectorial representation whose dimensions are identified by Objects
  * 
@@ -40,8 +42,10 @@ public interface Vector extends Normalizable {
 	 * 
 	 * @param vector
 	 * @return the euclidead distance
+	 * @throws VectorOperationException 
+	 * @throws Exception 
 	 */
-	public float euclideanDistance(Vector vector);
+	public float euclideanDistance(Vector vector) throws VectorOperationException;
 
 	/**
 	 * Compute the point-wise product of this vector with the one in
