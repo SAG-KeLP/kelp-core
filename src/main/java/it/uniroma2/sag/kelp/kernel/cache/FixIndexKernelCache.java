@@ -16,6 +16,8 @@
 package it.uniroma2.sag.kelp.kernel.cache;
 
 /**
+ * NOTE: this is a deprecated kernel cache. Use FixSizeKernelCache instead.
+ * 
  * Cache for kernel computations. It is the optimal solution when all the pairwise kernel computations
  * between all the examples in the Dataset can be simultaneously stored in cache. 
  * Given a number of examples to store m, the memory occupation is about m*(m+1)/2 floats = m*(m+1)*2B
@@ -32,9 +34,9 @@ import it.uniroma2.sag.kelp.data.example.Example;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+@Deprecated
 @JsonTypeName("fixIndex")
 public class FixIndexKernelCache extends KernelCache implements Serializable{
 

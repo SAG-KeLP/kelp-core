@@ -29,6 +29,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 
 /**
+ * NOTE: this is a deprecated kernel cache. Use FixSizeKernelCache instead.
+ * 
  * Cache for kernel computations. It can stores all the pairwise kernel computations
  * among any set of examples with cardinality not exceeding the <code>exampleToStore</code>
  * parameter. It is the optimal solution when all the pairwise kernel computations
@@ -39,6 +41,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
  * 
  * @author      Simone Filice
  */
+@Deprecated
 @JsonTypeName("dynamicIndex")
 public class DynamicIndexKernelCache extends KernelCache implements Serializable{
 
