@@ -17,12 +17,13 @@ package it.uniroma2.sag.kelp.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
- * It is a serializer, i.e. an object that is able to convert objects into a String representation, preserving all their
+ * It is a serializer, i.e., an object that is able to convert objects into a String representation, preserving all their
  * properties. The serializer is then able to deserialize those textual representations to instantiate again the original
  * serialized object
  * 
@@ -84,6 +85,19 @@ public interface ObjectSerializer {
 	 * @throws JsonMappingException
 	 */
 	public <T> T readValue(File file, Class<T> valueType)
+			throws IOException, JsonParseException, JsonMappingException;
+
+	/**
+	 * Deserializes an object that has been previously converted into a textual format 
+	 * 
+	 * @param inputStream the input stream from which the serialized format must be read
+	 * @param valueType the class of the object to be deserialized
+	 * @return the deserialized object
+	 * @throws IOException
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 */
+	public <T> T readValue(InputStream inputStream, Class<T> valueType)
 			throws IOException, JsonParseException, JsonMappingException;
 	
 }

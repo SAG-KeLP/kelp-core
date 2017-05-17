@@ -18,6 +18,7 @@ package it.uniroma2.sag.kelp.utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.zip.GZIPOutputStream;
@@ -30,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
- * It is a serializer, i.e. an object that is able to convert objects into a
+ * It is a serializer, i.e., an object that is able to convert objects into a
  * String representation, preserving all their properties. It embeds the Jackson
  * Serializer.
  * 
@@ -57,6 +58,12 @@ public class JacksonSerializerWrapper implements ObjectSerializer {
 	public <T> T readValue(File file, Class<T> valueType) throws IOException,
 			JsonParseException, JsonMappingException {
 		return mapper.readValue(file, valueType);
+	}
+	
+	@Override
+	public <T> T readValue(InputStream inputStream, Class<T> valueType) throws IOException,
+			JsonParseException, JsonMappingException {
+		return mapper.readValue(inputStream, valueType);
 	}
 
 	@Override
