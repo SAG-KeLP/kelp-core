@@ -50,6 +50,13 @@ public interface WordspaceI {
 	public Vector getVector(String word);
 	
 	/**
+	 * Returns the zero vector in the wordspace, i.e, a zero vector having the worspace dimensionality
+	 * 
+	 * @return the zero vector associated to this wordspace
+	 */
+	public Vector getZeroVector();
+	
+	/**
 	 * Returns the complete set of words in the vocabulary (words having an associated vector in this wordspace)
 	 * 
 	 * @return the set of all the words in the vocabulary

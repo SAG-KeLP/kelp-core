@@ -236,4 +236,10 @@ public class Wordspace implements WordspaceI {
 		this.populate(matrixPath);
 	}
 
+	@Override
+	public Vector getZeroVector() {
+		Vector aVector = (Vector) vectors.values()[0];
+		return aVector.getZeroVector();
+	}
+
 }
