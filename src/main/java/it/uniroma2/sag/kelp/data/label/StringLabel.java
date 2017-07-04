@@ -21,7 +21,7 @@ package it.uniroma2.sag.kelp.data.label;
  * 
  * @author Simone Filice
  */
-public class StringLabel implements Label {
+public class StringLabel implements Label, Comparable<StringLabel> {
 	
 	private static final long serialVersionUID = 1931028205403311309L;
 	
@@ -87,4 +87,8 @@ public class StringLabel implements Label {
 		return true;
 	}
 
+	@Override
+	public int compareTo(StringLabel o) {
+		return toString().compareTo(o.toString());
+	}
 }
