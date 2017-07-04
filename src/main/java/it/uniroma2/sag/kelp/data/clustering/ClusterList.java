@@ -23,5 +23,15 @@ public class ClusterList extends ArrayList<Cluster>{
 	 * 
 	 */
 	private static final long serialVersionUID = 2023197056285787728L;
+	
+	public int getNumberOfExamples() {
+		int res = 0;
+
+		for (int clustId = 0; clustId < this.size(); clustId++) {
+			res += get(clustId).getExamples().size();
+		}
+
+		return res;
+	}
 
 }
