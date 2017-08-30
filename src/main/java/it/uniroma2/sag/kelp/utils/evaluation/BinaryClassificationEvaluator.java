@@ -64,10 +64,23 @@ public class BinaryClassificationEvaluator extends Evaluator {
 	}
 
 	protected void compute() {
-		precision = (float) truePositivePredicted / (float) predictedPositive;
-		recall = (float) truePositivePredicted / (float) realPositive;
-		f1 = (2 * precision * recall) / (precision + recall);
-
+		if(predictedPositive==0){
+			precision = 0;
+		}else{
+			precision = (float) truePositivePredicted / (float) predictedPositive;
+		}
+		if(realPositive==0){
+			recall = 0;
+		}else{
+			recall = (float) truePositivePredicted / (float) realPositive;
+		}
+		
+		if(precision == 0 || recall == 0){
+			f1 = 0;
+		}else{
+			f1 = (2 * precision * recall) / (precision + recall);
+		}
+		
 		accuracy = (float) correct / (float) total;
 		this.computed=true;
 	}
