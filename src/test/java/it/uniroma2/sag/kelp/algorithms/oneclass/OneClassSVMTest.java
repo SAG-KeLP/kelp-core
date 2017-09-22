@@ -15,20 +15,6 @@
 
 package it.uniroma2.sag.kelp.algorithms.oneclass;
 
-import it.uniroma2.sag.kelp.data.dataset.SimpleDataset;
-import it.uniroma2.sag.kelp.data.example.Example;
-import it.uniroma2.sag.kelp.data.label.Label;
-import it.uniroma2.sag.kelp.data.label.StringLabel;
-import it.uniroma2.sag.kelp.kernel.Kernel;
-import it.uniroma2.sag.kelp.kernel.cache.FixIndexKernelCache;
-import it.uniroma2.sag.kelp.kernel.standard.RbfKernel;
-import it.uniroma2.sag.kelp.kernel.vector.LinearKernel;
-import it.uniroma2.sag.kelp.learningalgorithm.classification.libsvm.OneClassSvmClassification;
-import it.uniroma2.sag.kelp.predictionfunction.classifier.ClassificationOutput;
-import it.uniroma2.sag.kelp.predictionfunction.classifier.Classifier;
-import it.uniroma2.sag.kelp.utils.evaluation.BinaryClassificationEvaluator;
-import it.uniroma2.sag.kelp.utils.exception.NoSuchPerformanceMeasureException;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,6 +27,20 @@ import java.util.zip.GZIPInputStream;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import it.uniroma2.sag.kelp.data.dataset.SimpleDataset;
+import it.uniroma2.sag.kelp.data.example.Example;
+import it.uniroma2.sag.kelp.data.label.Label;
+import it.uniroma2.sag.kelp.data.label.StringLabel;
+import it.uniroma2.sag.kelp.kernel.Kernel;
+import it.uniroma2.sag.kelp.kernel.cache.FixSizeKernelCache;
+import it.uniroma2.sag.kelp.kernel.standard.RbfKernel;
+import it.uniroma2.sag.kelp.kernel.vector.LinearKernel;
+import it.uniroma2.sag.kelp.learningalgorithm.classification.libsvm.OneClassSvmClassification;
+import it.uniroma2.sag.kelp.predictionfunction.classifier.ClassificationOutput;
+import it.uniroma2.sag.kelp.predictionfunction.classifier.Classifier;
+import it.uniroma2.sag.kelp.utils.evaluation.BinaryClassificationEvaluator;
+import it.uniroma2.sag.kelp.utils.exception.NoSuchPerformanceMeasureException;
 
 public class OneClassSVMTest {
 	// Accuracy: 0.9766667
@@ -74,7 +74,7 @@ public class OneClassSVMTest {
 		kernel = new RbfKernel(1, kernel);
 
 		// add a cache
-		kernel.setKernelCache(new FixIndexKernelCache(trainingSet
+		kernel.setKernelCache(new FixSizeKernelCache(trainingSet
 				.getNumberOfExamples()));
 
 		// define the learning algorithm

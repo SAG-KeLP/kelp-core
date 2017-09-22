@@ -95,6 +95,7 @@ public class KernelCacheTest {
 		cache.flushCache();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void checkFixIndexKernelCache() {
 		FixIndexKernelCache cache = new FixIndexKernelCache(dataset.getNumberOfExamples());
@@ -103,11 +104,26 @@ public class KernelCacheTest {
 		checkNCorrectlyStored(smallCache, dataset, 0);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void checkDynamicIndexKernelCache() {
 		DynamicIndexKernelCache cache = new DynamicIndexKernelCache(dataset.getNumberOfExamples());
 		checkNCorrectlyStored(cache, dataset, dataset.getNumberOfExamples()*dataset.getNumberOfExamples());
 		DynamicIndexKernelCache smallCache = new DynamicIndexKernelCache(dataset.getNumberOfExamples()/2);
+		checkNCorrectlyStored(smallCache, dataset, 0);
+		SimpleDataset [] smallDatasets = dataset.nFolding(2);
+		smallCache.setExamplesToStore(smallDatasets[0].getNumberOfExamples());
+		checkNCorrectlyStored(smallCache, smallDatasets[0], smallDatasets[0].getNumberOfExamples()*smallDatasets[0].getNumberOfExamples());
+		smallCache.setExamplesToStore(smallDatasets[1].getNumberOfExamples());
+		checkNCorrectlyStored(smallCache, smallDatasets[1], smallDatasets[1].getNumberOfExamples()*smallDatasets[1].getNumberOfExamples());
+
+	}
+	
+	@Test
+	public void checkFixSizeKernel() {
+		FixSizeKernelCache cache = new FixSizeKernelCache(dataset.getNumberOfExamples());
+		checkNCorrectlyStored(cache, dataset, dataset.getNumberOfExamples()*dataset.getNumberOfExamples());
+		FixSizeKernelCache smallCache = new FixSizeKernelCache(dataset.getNumberOfExamples()/2);
 		checkNCorrectlyStored(smallCache, dataset, 0);
 		SimpleDataset [] smallDatasets = dataset.nFolding(2);
 		smallCache.setExamplesToStore(smallDatasets[0].getNumberOfExamples());

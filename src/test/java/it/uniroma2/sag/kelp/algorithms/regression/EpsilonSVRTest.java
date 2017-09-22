@@ -15,19 +15,6 @@
 
 package it.uniroma2.sag.kelp.algorithms.regression;
 
-import it.uniroma2.sag.kelp.data.dataset.SimpleDataset;
-import it.uniroma2.sag.kelp.data.example.Example;
-import it.uniroma2.sag.kelp.data.label.Label;
-import it.uniroma2.sag.kelp.data.label.StringLabel;
-import it.uniroma2.sag.kelp.kernel.Kernel;
-import it.uniroma2.sag.kelp.kernel.cache.FixIndexKernelCache;
-import it.uniroma2.sag.kelp.kernel.vector.LinearKernel;
-import it.uniroma2.sag.kelp.learningalgorithm.regression.libsvm.EpsilonSvmRegression;
-import it.uniroma2.sag.kelp.predictionfunction.Prediction;
-import it.uniroma2.sag.kelp.predictionfunction.PredictionFunction;
-import it.uniroma2.sag.kelp.utils.evaluation.RegressorEvaluator;
-import it.uniroma2.sag.kelp.utils.exception.NoSuchPerformanceMeasureException;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,6 +27,19 @@ import java.util.zip.GZIPInputStream;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import it.uniroma2.sag.kelp.data.dataset.SimpleDataset;
+import it.uniroma2.sag.kelp.data.example.Example;
+import it.uniroma2.sag.kelp.data.label.Label;
+import it.uniroma2.sag.kelp.data.label.StringLabel;
+import it.uniroma2.sag.kelp.kernel.Kernel;
+import it.uniroma2.sag.kelp.kernel.cache.FixSizeKernelCache;
+import it.uniroma2.sag.kelp.kernel.vector.LinearKernel;
+import it.uniroma2.sag.kelp.learningalgorithm.regression.libsvm.EpsilonSvmRegression;
+import it.uniroma2.sag.kelp.predictionfunction.Prediction;
+import it.uniroma2.sag.kelp.predictionfunction.PredictionFunction;
+import it.uniroma2.sag.kelp.utils.evaluation.RegressorEvaluator;
+import it.uniroma2.sag.kelp.utils.exception.NoSuchPerformanceMeasureException;
 
 public class EpsilonSVRTest {
 	// Accuracy: 0.9766667
@@ -72,7 +72,7 @@ public class EpsilonSVRTest {
 		Kernel kernel = new LinearKernel("0");
 
 		// add a cache
-		kernel.setKernelCache(new FixIndexKernelCache(trainingSet
+		kernel.setKernelCache(new FixSizeKernelCache(trainingSet
 				.getNumberOfExamples()));
 
 		// define the learning algorithm
