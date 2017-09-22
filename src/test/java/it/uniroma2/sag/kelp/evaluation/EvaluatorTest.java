@@ -75,6 +75,18 @@ public class EvaluatorTest {
 			
 			ev.getPerformanceMeasure("Recall");
 			ev.getPerformanceMeasure("recall");
+			
+			ev.getPerformanceMeasure("Tp");
+			ev.getPerformanceMeasure("tp");
+			
+			ev.getPerformanceMeasure("Fp");
+			ev.getPerformanceMeasure("fp");
+			
+			ev.getPerformanceMeasure("Tn");
+			ev.getPerformanceMeasure("tn");
+			
+			ev.getPerformanceMeasure("Tp");
+			ev.getPerformanceMeasure("tp");
 		} catch (NoSuchPerformanceMeasureException e) {
 			Assert.assertTrue(false);
 		}
@@ -88,22 +100,25 @@ public class EvaluatorTest {
 		ev.getF1();
 		ev.getPrecision();
 		ev.getRecall();
+		ev.getTp();
+		ev.getFp();
+		ev.getTn();
+		ev.getFn();
 	}
 	
 	@Test
 	public void directMethodCallingOnMulticlassTest() {
 		MulticlassClassificationEvaluator ev = new MulticlassClassificationEvaluator(labels);
 		ev.getAccuracy();
-		ev.getMeanF1();
+		ev.getMacroF1();
+		ev.getMacroRecall();
+		ev.getMacroPrecision();
 		Label l = new StringLabel("one");
 		ev.getPrecisionFor(l);
 		ev.getRecallFor(l);
 		ev.getF1For(l);
-		ev.getOverallPrecision();
-		ev.getOverallRecall();
-		ev.getOverallF1();
-		ev.getRecalls();
-		ev.getPrecisions();
-		ev.getF1s();
+		ev.getMicroF1();
+		ev.getMicroRecall();
+		ev.getMicroPrecision();
 	}
 }

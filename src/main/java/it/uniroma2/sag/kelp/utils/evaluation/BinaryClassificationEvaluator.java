@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Simone Filice and Giuseppe Castellucci and Danilo Croce and Roberto Basili
+ * Copyright 2014-2017 Simone Filice and Giuseppe Castellucci and Danilo Croce and Roberto Basili
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,12 +23,13 @@ import it.uniroma2.sag.kelp.predictionfunction.Prediction;
  * This is an instance of an Evaluator. It allows to compute the some common
  * measure for binary classification tasks.
  * 
- * @author Giuseppe Castellucci
+ * @author Simone Filice, Giuseppe Castellucci
  */
 public class BinaryClassificationEvaluator extends Evaluator {
 	private Label positiveLabel;
 
-	private int total, correct, truePositivePredicted, predictedPositive, realPositive;
+	//private int total, correct, truePositivePredicted, predictedPositive, realPositive;
+	private int tp, tn, fp, fn;
 	private float accuracy, precision, recall, f1;
 
 	public BinaryClassificationEvaluator(Label positiveClass) {
@@ -37,52 +38,127 @@ public class BinaryClassificationEvaluator extends Evaluator {
 	}
 
 	private void initializeCounters() {
-		total = 0;
-		correct = 0;
-		accuracy = 0.0f;
-		realPositive = 0;
-		truePositivePredicted = 0;
-		predictedPositive = 0;
-		precision = 0.0f;
-		recall = 0.0f;
-		f1 = 0.0f;
+		tp = 0;
+		tn = 0;
+		fp = 0;
+		fn = 0;
 		this.computed=false;
 	}
 
+	@Override
 	public void addCount(Example test, Prediction prediction) {
-		total++;
-		if (test.isExampleOf(positiveLabel))
-			realPositive++;
-		if (prediction.getScore(positiveLabel) >= 0)
-			predictedPositive++;
-		if (prediction.getScore(positiveLabel) >= 0 && test.isExampleOf(positiveLabel)) {
-			correct++;
-			truePositivePredicted++;
-		} else if (prediction.getScore(positiveLabel) < 0 && !test.isExampleOf(positiveLabel))
-			correct++;
+//		total++;
+//		if (test.isExampleOf(positiveLabel))
+//			realPositive++;
+//		if (prediction.getScore(positiveLabel) >= 0)
+//			predictedPositive++;
+//		if (prediction.getScore(positiveLabel) >= 0 && test.isExampleOf(positiveLabel)) {
+//			correct++;
+//			truePositivePredicted++;
+//		} else if (prediction.getScore(positiveLabel) < 0 && !test.isExampleOf(positiveLabel))
+//			correct++;
+//		this.computed = false;
+		if(test.isExampleOf(positiveLabel)){
+			if (prediction.getScore(positiveLabel) >= 0){
+				tp++;
+			}else{
+				fn++;
+			}
+		}else{
+			if (prediction.getScore(positiveLabel) >= 0){
+				fp++;
+			}else{
+				tn++;
+			}
+		}
 		this.computed = false;
 	}
 
+	@Override
 	protected void compute() {
-		if(predictedPositive==0){
+//		if(predictedPositive==0){
+//			precision = 0;
+//		}else{
+//			precision = (float) truePositivePredicted / (float) predictedPositive;
+//		}
+//		if(realPositive==0){
+//			recall = 0;
+//		}else{
+//			recall = (float) truePositivePredicted / (float) realPositive;
+//		}
+//		
+//		if(precision == 0 || recall == 0){
+//			f1 = 0;
+//		}else{
+//			f1 = (2 * precision * recall) / (precision + recall);
+//		}
+//		
+//		accuracy = (float) correct / (float) total;
+		//Computing accuracy
+		if(tp+tn+fp+fn == 0){
+			accuracy = 0;
+		}else{
+			accuracy = (float)(tp+tn)/(tp+tn+fp+fn);
+		}		
+		
+		//Computing precision
+		if(tp+fp == 0){
 			precision = 0;
 		}else{
-			precision = (float) truePositivePredicted / (float) predictedPositive;
-		}
-		if(realPositive==0){
-			recall = 0;
-		}else{
-			recall = (float) truePositivePredicted / (float) realPositive;
+			precision = (float)tp/(tp+fp);
 		}
 		
+		//Computing recall
+		if(tp+fn == 0){
+			recall = 0;
+		}else{
+			recall = (float)tp/(tp+fn);
+		}
+		
+		//Computing f1
 		if(precision == 0 || recall == 0){
 			f1 = 0;
 		}else{
 			f1 = (2 * precision * recall) / (precision + recall);
 		}
-		
-		accuracy = (float) correct / (float) total;
+
 		this.computed=true;
+	}
+	
+	/**
+	 * Return the true positives
+	 * 
+	 * @return true positives
+	 */
+	public float getTp() {
+		return tp;
+	}
+	
+	/**
+	 * Return the false positives
+	 * 
+	 * @return false positives
+	 */
+	public float getFp() {
+		return fp;
+	}
+	
+	/**
+	 * Return the true negatives
+	 * 
+	 * @return true negatives
+	 */
+	public float getTn() {
+		return tn;
+	}
+	
+	/**
+	 * Return the false negatives
+	 * 
+	 * @return false negatives
+	 */
+	public float getFn() {
+		return fn;
 	}
 
 	/**
@@ -97,7 +173,7 @@ public class BinaryClassificationEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Return the precision considering all classes together
+	 * Return the precision of the positive class
 	 * 
 	 * @return precision
 	 */
@@ -108,7 +184,7 @@ public class BinaryClassificationEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Return the recall considering all classes together
+	 * Return the recall of the positive class
 	 * 
 	 * @return recall
 	 */
@@ -119,7 +195,7 @@ public class BinaryClassificationEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Return the f1 considering all classes together
+	 * Return the f1 of the positive class
 	 * 
 	 * @return f1
 	 */
@@ -142,13 +218,17 @@ public class BinaryClassificationEvaluator extends Evaluator {
 	 */
 	@SuppressWarnings("unused")
 	private void printCounters() {
-		System.out.println("Accuracy measures");
-		System.out.println("\tCorrect: " + correct);
-		System.out.println("\tTotal: " + total);
-		System.out.println("F1 measures");
-		System.out.println("\tCorrect: " + truePositivePredicted);
-		System.out.println("\tPredicted: " + predictedPositive);
-		System.out.println("\tToBePredicted: " + total);
+//		System.out.println("Accuracy measures");
+//		System.out.println("\tCorrect: " + correct);
+//		System.out.println("\tTotal: " + total);
+//		System.out.println("F1 measures");
+//		System.out.println("\tCorrect: " + truePositivePredicted);
+//		System.out.println("\tPredicted: " + predictedPositive);
+//		System.out.println("\tToBePredicted: " + total);
+		System.out.println("True positive:" + tp);
+		System.out.println("True negative:" + tn);
+		System.out.println("False positive:" + fp);
+		System.out.println("False negative:" + fn);
 	}
 
 	@Override

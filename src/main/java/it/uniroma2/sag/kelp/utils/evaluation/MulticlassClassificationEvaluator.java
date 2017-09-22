@@ -15,34 +15,42 @@
 
 package it.uniroma2.sag.kelp.utils.evaluation;
 
-import gnu.trove.map.hash.TObjectFloatHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import it.uniroma2.sag.kelp.data.example.Example;
 import it.uniroma2.sag.kelp.data.label.Label;
 import it.uniroma2.sag.kelp.predictionfunction.Prediction;
 import it.uniroma2.sag.kelp.predictionfunction.classifier.ClassificationOutput;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This is an instance of an Evaluator. It allows to compute the some common
  * measure for classification tasks. It computes precision, recall, f1s for each
- * class, and a global accuracy.
+ * class, a global accuracy, micro measures and macro measures.
  * 
- * @author Giuseppe Castellucci
+ * In case of multilabel classification, a prediction is considered correct (for computing the accuracy) if and only if
+ * all the predicted labels for a given instance are correct and no additional labels are predicted
+ * 
+ * @author Simone Filice, Giuseppe Castellucci
  */
 public class MulticlassClassificationEvaluator extends Evaluator {
-	private List<Label> labels;
-	protected TObjectFloatHashMap<Label> correctCounter = new TObjectFloatHashMap<Label>();
-	protected TObjectFloatHashMap<Label> predictedCounter = new TObjectFloatHashMap<Label>();
-	protected TObjectFloatHashMap<Label> toBePredictedCounter = new TObjectFloatHashMap<Label>();
+	
+	protected class ClassStats{
+		protected int tp;
+		protected int fp;
+		protected int tn;
+		protected int fn;
+		protected float precision, recall, f1;
+	}
+	
+	protected List<Label> labels;	
+	protected HashMap<Label, ClassStats> classStats = new HashMap<Label, ClassStats>();
 
-	private TObjectFloatHashMap<Label> precisions = new TObjectFloatHashMap<Label>();
-	private TObjectFloatHashMap<Label> recalls = new TObjectFloatHashMap<Label>();
-	private TObjectFloatHashMap<Label> f1s = new TObjectFloatHashMap<Label>();
-
-	protected int total, correct;
+	protected int total, correct, totalTp, totalTn, totalFp, totalFn;
 	private float accuracy, overallPrecision, overallRecall, overallF1;
+	private float microPrecision, microRecall, microF1;
+	private float macroPrecision, macroRecall, macroF1;
 
 	/**
 	 * Initialize a new F1Evaluator that will work on the specified classes
@@ -56,101 +64,126 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 
 	private void initializeCounters() {
 		for (Label l : labels) {
-			correctCounter.put(l, 0.0f);
-			toBePredictedCounter.put(l, 0.0f);
-			predictedCounter.put(l, 0.0f);
-			precisions.put(l, -1.0f);
-			recalls.put(l, -1.0f);
-			f1s.put(l, -1.0f);
+			
+			ClassStats stats = new ClassStats();
+			this.classStats.put(l, stats);
+
 		}
-		total = 0;
-		correct = 0;
 		accuracy = 0.0f;
 		this.computed=false;
 	}
 
-	/**
-	 * Return the precision map
-	 * 
-	 * @return
-	 */
-	public TObjectFloatHashMap<Label> getPrecisions() {
-		if (!this.computed)
-			compute();
-		return precisions;
-	}
-
-	/**
-	 * Return the recall map
-	 * 
-	 * @return
-	 */
-	public TObjectFloatHashMap<Label> getRecalls() {
-		if (!this.computed)
-			compute();
-		return recalls;
-	}
-
-	/**
-	 * Return the F1 map
-	 * 
-	 * @return
-	 */
-	public TObjectFloatHashMap<Label> getF1s() {
-		if (!this.computed)
-			compute();
-		return f1s;
-	}
-
 	public void addCount(Example test, Prediction prediction) {
 		ClassificationOutput tmp = (ClassificationOutput) prediction;
-		for (Label l : test.getClassificationLabels()) {
-			toBePredictedCounter.put(l, toBePredictedCounter.get(l) + 1);
-			total++;
-		}
-		List<Label> predictions = tmp.getPredictedClasses();
-		if (predictions.size() > 0) {
-			for (Label p : predictions) {
-				predictedCounter.put(p, predictedCounter.get(p) + 1);
-				if (test.isExampleOf(p)) {
-					correctCounter.put(p, correctCounter.get(p) + 1);
-					correct++;
+		
+		boolean correct = true;
+		for(Label l: this.labels){
+			ClassStats stats = this.classStats.get(l);
+			if(test.isExampleOf(l)){
+				if(tmp.isClassPredicted(l)){
+					stats.tp++;
+					totalTp++;
+				}else{
+					stats.fn++;
+					totalFn++;
+					correct = false;
+				}
+			}else{
+				if(tmp.isClassPredicted(l)){
+					stats.fp++;
+					totalFp++;
+					correct = false;
+				}else{
+					totalTn++;
+					stats.tn++;
 				}
 			}
 		}
+		
+		this.total++;
+		if(correct){
+			this.correct++;
+		}
+		
+//		for (Label l : test.getClassificationLabels()) {
+//			toBePredictedCounter.put(l, toBePredictedCounter.get(l) + 1);
+//			total++;
+//		}
+//		List<Label> predictions = tmp.getPredictedClasses();
+//		if (predictions.size() > 0) {
+//			for (Label p : predictions) {
+//				predictedCounter.put(p, predictedCounter.get(p) + 1);
+//				if (test.isExampleOf(p)) {
+//					correctCounter.put(p, correctCounter.get(p) + 1);
+//					correct++;
+//				}
+//			}
+//		}
 		this.computed=false;
 	}
 
 	protected void compute() {
-		int c = 0;
-		int p = 0;
-		int tobe=0;
-		for (Label l : labels) {
-			float precision = 0.0f;
-			float recall = 0.0f;
-			float f1 = 0.0f;
-			if (correctCounter.get(l) != 0 && predictedCounter.get(l) != 0
-					&& toBePredictedCounter.get(l) != 0) {
-				precision = correctCounter.get(l) / predictedCounter.get(l);
-				recall = correctCounter.get(l) / toBePredictedCounter.get(l);
-				f1 = (2 * precision * recall) / (precision + recall);
+		
+		//Compute accuracy
+		if(this.total > 0){
+			this.accuracy = (float)this.correct/(this.total);
+		}		
+		
+		//Compute class precision, recall, f1 and macro precision, macro recall
+		this.macroPrecision = 0;
+		for(Label l : labels){
+			ClassStats classStats = this.classStats.get(l);
+			//Computing precision
+			if(classStats.tp+classStats.fp == 0){
+				classStats.precision = 0;
+			}else{
+				classStats.precision = (float)classStats.tp/(classStats.tp+classStats.fp);
 			}
-
-			c += correctCounter.get(l);
-			p += predictedCounter.get(l);
-			tobe+=toBePredictedCounter.get(l);
-
-			precisions.put(l, precision);
-			recalls.put(l, recall);
-			f1s.put(l, f1);
+			macroPrecision+=classStats.precision;
+			
+			//Computing recall
+			if(classStats.tp+classStats.fn == 0){
+				classStats.recall = 0;
+			}else{
+				classStats.recall = (float)classStats.tp/(classStats.tp+classStats.fn);
+			}
+			macroRecall+=classStats.recall;
+			
+			//Computing f1
+			if(classStats.precision == 0 || classStats.recall == 0){
+				classStats.f1 = 0;
+			}else{
+				classStats.f1 = (2 * classStats.precision * classStats.recall) / (classStats.precision + classStats.recall);
+			}
 		}
 		
-		overallPrecision = (float) c / (float) p;
-		overallRecall = (float) c / (float) tobe;
-		overallF1 = 2 * overallPrecision * overallRecall
-				/ (overallPrecision + overallRecall);
+		macroPrecision/=this.labels.size();
+		macroRecall/=this.labels.size();
+		if(macroPrecision == 0 || macroRecall == 0){
+			macroF1 = 0;
+		}else{
+			macroF1 = 2 * macroPrecision *macroRecall /(macroPrecision+macroRecall);
+		}
+		
+		//Computing micro measures
+		if(totalTp+totalFp>0){
+			microPrecision = (float)totalTp/(totalTp+totalFp);
+		}else{
+			microPrecision = 0;
+		}
+		
+		if(totalTp+totalFn>0){
+			microRecall = (float)totalTp/(totalTp+totalFn);
+		}else{
+			microRecall = 0;
+		}
+		
+		if(microPrecision == 0 || microRecall == 0){
+			microF1 = 0;
+		}else{
+			microF1 = 2 * microPrecision *microRecall /(microPrecision+microRecall);
+		}
 
-		accuracy = (float) correct / (float) total;
 		this.computed=true;
 	}
 
@@ -163,8 +196,10 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 		if (!this.computed)
 			compute();
 		
-		if (precisions.containsKey(l))
-			return precisions.get(l);
+		ClassStats stats = this.classStats.get(l);
+		if(stats != null){
+			return stats.precision;
+		}
 		return -1.0f;
 	}
 
@@ -177,8 +212,10 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 		if (!this.computed)
 			compute();
 		
-		if (recalls.containsKey(l))
-			return recalls.get(l);
+		ClassStats stats = this.classStats.get(l);
+		if(stats != null){
+			return stats.recall;
+		}
 		return -1.0f;
 	}
 
@@ -191,13 +228,65 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 		if (!this.computed)
 			compute();
 		
-		if (f1s.containsKey(l))
-			return f1s.get(l);
+		ClassStats stats = this.classStats.get(l);
+		if(stats != null){
+			return stats.f1;
+		}
+		return -1.0f;
+	}
+	
+	/**
+	 * Return the true positives for the specified label
+	 * 
+	 * @return tp of Label l
+	 */
+	public float getTpFor(Label l) {
+		ClassStats stats = this.classStats.get(l);
+		if (stats!=null)
+			return stats.tp;
+		return -1.0f;
+	}
+	
+	/**
+	 * Return the true negatives for the specified label
+	 * 
+	 * @return tn of Label l
+	 */
+	public float getTnFor(Label l) {
+		ClassStats stats = this.classStats.get(l);
+		if (stats!=null)
+			return stats.tn;
 		return -1.0f;
 	}
 
 	/**
-	 * Return the accuracy
+	 * Return the false positives for the specified label
+	 * 
+	 * @return fp of Label l
+	 */
+	public float getFpFor(Label l) {
+		ClassStats stats = this.classStats.get(l);
+		if (stats!=null)
+			return stats.fp;
+		return -1.0f;
+	}
+
+	/**
+	 * Return the false negatives for the specified label
+	 * 
+	 * @return fn of Label l
+	 */
+	public float getFnFor(Label l) {
+		ClassStats stats = this.classStats.get(l);
+		if (stats!=null)
+			return stats.fn;
+		return -1.0f;
+	}
+
+	
+
+	/**
+	 * Returns the accuracy
 	 * 
 	 * @return accuracy
 	 */
@@ -209,10 +298,49 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 	}
 
 	/**
+	 * Returns the micro-precision
+	 * 
+	 * @return micro-precision
+	 */
+	public float getMicroPrecision() {
+		if (!this.computed)
+			compute();
+		
+		return microPrecision;
+	}
+	
+	/**
+	 * Returns the micro-recall
+	 * 
+	 * @return micro-recall
+	 */
+	public float getMicroRecall() {
+		if (!this.computed)
+			compute();
+		
+		return microRecall;
+	}
+	
+	/**
+	 * Returns the micro-f1
+	 * 
+	 * @return micro-f1
+	 */
+	public float getMicroF1() {
+		if (!this.computed)
+			compute();
+		
+		return microF1;
+	}
+	
+	/**
 	 * Return the precision considering all classes together
 	 * 
 	 * @return precision
+	 * 
+	 * This method is deprecated, use getMicroPrecision instead
 	 */
+	@Deprecated
 	public float getOverallPrecision() {
 		if (!this.computed)
 			compute();
@@ -224,7 +352,10 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 	 * Return the recall considering all classes together
 	 * 
 	 * @return recall
+	 * 
+	 * This method is deprecated, use getMicroRecall instead
 	 */
+	@Deprecated
 	public float getOverallRecall() {
 		if (!this.computed)
 			compute();
@@ -236,7 +367,10 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 	 * Return the f1 considering all classes together
 	 * 
 	 * @return f1
+	 * 
+	 * This method is deprecated, use getMicroF1 instead
 	 */
+	@Deprecated
 	public float getOverallF1() {
 		if (!this.computed)
 			compute();
@@ -248,16 +382,55 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 	 * Return the mean of the F1 scores considering all the labels involved
 	 * 
 	 * @return mean F1 of all Label{s}
+	 * 
+	 * This method is deprecated, use getMacroF1 instead
 	 */
+	@Deprecated
 	public float getMeanF1() {
 		if (!this.computed)
 			compute();
 		
-		return getMeanF1For((ArrayList<Label>) labels);
+		return this.macroF1;
+	}
+	
+	/**
+	 * Return the macro-precision 
+	 * 
+	 * @return macro-precision
+	 */
+	public float getMacroPrecision() {
+		if (!this.computed)
+			compute();
+		
+		return this.macroPrecision;
+	}
+	
+	/**
+	 * Return the macro-recall 
+	 * 
+	 * @return macro-recall
+	 */
+	public float getMacroRecall() {
+		if (!this.computed)
+			compute();
+		
+		return this.macroRecall;
+	}
+	
+	/**
+	 * Return the macro-F1 
+	 * 
+	 * @return macro-F1
+	 */
+	public float getMacroF1() {
+		if (!this.computed)
+			compute();
+		
+		return this.macroF1;
 	}
 
 	/**
-	 * Return the mean of the F1 scores considering the specified labels
+	 * Return the mean of the F1 scores considering the specified labels only
 	 * 
 	 * @return mean F1 of specified Label{s} ls
 	 */
@@ -267,7 +440,10 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 		
 		float sum = 0.0f;
 		for (Label l : ls) {
-			sum += f1s.get(l);
+			ClassStats stats = this.classStats.get(l);
+			if(stats != null){
+				sum += stats.f1;
+			}
 		}
 		float mean = sum / (float) ls.size();
 		return mean;
@@ -278,13 +454,14 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 	 */
 	@Override
 	public void clear() {
-		correctCounter.clear();
-		predictedCounter.clear();
-		toBePredictedCounter.clear();
-		precisions.clear();
-		recalls.clear();
-		f1s.clear();
-		accuracy = 0.0f;
+		for(ClassStats stats : this.classStats.values()){
+			stats.tp = 0;
+			stats.tn = 0;
+			stats.fp = 0;
+			stats.fn = 0;
+		}
+		total = 0;
+		correct = 0;
 		this.computed=false;
 	}
 
@@ -307,16 +484,22 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 	 * @param l
 	 */
 	public void printCounters(Label l) {
-		System.out.println(correctCounter.get(l) + " "
-				+ predictedCounter.get(l) + " " + toBePredictedCounter.get(l));
+		ClassStats stats = this.classStats.get(l);
+		if(stats != null){
+			System.out.println("class " + l.toString() + ": tp=" + stats.tp + " tn=" + stats.tn
+					+ " fp=" + stats.fp + " fn=" + stats.fn);
+		}else{
+			System.out.println("There are no counters for the label " + l.toString());
+		}
+
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		for (Label l : labels) {
-			b.append(l + "\t" + precisions.get(l) + "\t" + recalls.get(l)
-					+ "\t" + f1s.get(l) + "\n");
+			b.append(l + "\t" + this.getPrecisionFor(l) + "\t" + this.getRecallFor(l)
+					+ "\t" + this.getF1For(l) + "\n");
 		}
 		return b.toString().trim();
 	}
