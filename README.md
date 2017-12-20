@@ -200,7 +200,7 @@ REFERENCES
 Useful Links
 -------------
 
-KeLP site: [http://sag.art.uniroma2.it/demo-software/kelp/][kelp-site]
+KeLP site: [http://www.kelp-ml.org][kelp-site]
 
 SAG site: [http://sag.art.uniroma2.it][kelp-site]
 
@@ -210,7 +210,7 @@ Source code hosted at GitHub: [https://github.com/SAG-KeLP][github]
 [sag-site]: http://sag.art.uniroma2.it "SAG site"
 [uniroma2-site]: http://www.uniroma2.it "University of Roma Tor Vergata"
 [maven-site]: http://maven.apache.org "Apache Maven"
-[kelp-site]: http://sag.art.uniroma2.it/demo-software/kelp/ "KeLP website"
+[kelp-site]: http://www.kelp-ml.org "KeLP website"
 [ejml-site]: https://code.google.com/p/efficient-java-matrix-library/ "EJML site"
 [trove-site]: http://trove.starlight-systems.com/news "TROVE site"
 [github]: https://github.com/SAG-KeLP
