@@ -135,7 +135,7 @@ public class MulticlassClassificationEvaluator extends Evaluator {
 			ClassStats classStats = this.classStats.get(l);
 			//Computing precision
 			if(classStats.tp+classStats.fp == 0){
-				classStats.precision = 0;
+				classStats.precision = 1;
 			}else{
 				classStats.precision = (float)classStats.tp/(classStats.tp+classStats.fp);
 			}
