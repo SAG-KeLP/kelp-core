@@ -102,6 +102,17 @@ public class DatasetReader {
 	}
 
 	/**
+	 * Skip an example: this function is useful when an example cannot be read
+	 * 
+	 * @return the next example
+	 * @throws IOException
+	 * @throws InstantiationException
+	 */
+	public void skipExample() throws IOException{
+		this.nextRow = this.inputBuffer.readLine();
+	}
+	
+	/**
 	 * Closes the reading buffer
 	 * 
 	 * @throws IOException
