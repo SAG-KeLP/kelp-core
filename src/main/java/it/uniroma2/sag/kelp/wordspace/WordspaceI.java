@@ -54,6 +54,7 @@ public interface WordspaceI {
 	 * 
 	 * @return the zero vector associated to this wordspace
 	 */
+	@JsonIgnore
 	public Vector getZeroVector();
 	
 	/**
