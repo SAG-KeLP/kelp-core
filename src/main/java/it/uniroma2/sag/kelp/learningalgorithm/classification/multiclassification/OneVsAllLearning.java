@@ -100,6 +100,24 @@ public class OneVsAllLearning implements ClassificationLearningAlgorithm, MetaLe
 		
 	}
 	
+	public void initializeWithPredictionFunction(OneVsAllClassifier oneVsAllClassifier) {
+		algorithms = new LearningAlgorithm[labels.size()];		
+		Classifier[] binaryClassifier = new Classifier[labels.size()];
+		for(int i=0; i<labels.size(); i++){
+			try {
+				algorithms[i] = this.baseAlgorithm.duplicate();
+				algorithms[i].setLabels(Arrays.asList(labels.get(i)));
+				algorithms[i].getPredictionFunction().setModel(oneVsAllClassifier.getBinaryClassifiers()[i].getModel());
+				binaryClassifier[i] = oneVsAllClassifier.getBinaryClassifiers()[i];
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				e.printStackTrace();
+				System.exit(0);
+			}
+		}
+		classifier.setBinaryClassifiers(binaryClassifier);	
+	}
+	
 	/**
 	 * This method will cause the meta-learning algorithm to learn 
 	 * N classifiers, where N is the number of classes in the dataset.
