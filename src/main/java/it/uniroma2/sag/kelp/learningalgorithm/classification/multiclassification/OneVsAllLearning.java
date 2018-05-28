@@ -18,19 +18,20 @@ package it.uniroma2.sag.kelp.learningalgorithm.classification.multiclassificatio
 import java.util.Arrays;
 import java.util.List;
 
-import it.uniroma2.sag.kelp.data.dataset.Dataset;
-import it.uniroma2.sag.kelp.data.label.Label;
-import it.uniroma2.sag.kelp.learningalgorithm.LearningAlgorithm;
-import it.uniroma2.sag.kelp.learningalgorithm.MetaLearningAlgorithm;
-import it.uniroma2.sag.kelp.learningalgorithm.classification.ClassificationLearningAlgorithm;
-import it.uniroma2.sag.kelp.predictionfunction.classifier.Classifier;
-import it.uniroma2.sag.kelp.predictionfunction.classifier.multiclass.OneVsAllClassifier;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import it.uniroma2.sag.kelp.data.dataset.Dataset;
+import it.uniroma2.sag.kelp.data.label.Label;
+import it.uniroma2.sag.kelp.learningalgorithm.LearningAlgorithm;
+import it.uniroma2.sag.kelp.learningalgorithm.MetaLearningAlgorithm;
+import it.uniroma2.sag.kelp.learningalgorithm.classification.ClassificationLearningAlgorithm;
+import it.uniroma2.sag.kelp.predictionfunction.PredictionFunction;
+import it.uniroma2.sag.kelp.predictionfunction.classifier.Classifier;
+import it.uniroma2.sag.kelp.predictionfunction.classifier.multiclass.OneVsAllClassifier;
 
 
 /**
@@ -82,7 +83,8 @@ public class OneVsAllLearning implements ClassificationLearningAlgorithm, MetaLe
 		return labels;
 	}
 		
-	private void initialize() {
+	public void initialize() {
+		System.out.println("QUI!");
 		algorithms = new LearningAlgorithm[labels.size()];		
 		Classifier[] binaryClassifier = new Classifier[labels.size()];
 		for(int i=0; i<labels.size(); i++){
@@ -184,6 +186,18 @@ public class OneVsAllLearning implements ClassificationLearningAlgorithm, MetaLe
 		OneVsAllLearning copy = new OneVsAllLearning();
 		copy.setBaseAlgorithm(this.baseAlgorithm);		
 		return copy;
+	}
+
+	@Override
+	public void setPredictionFunction(PredictionFunction predictionFunction) {
+		this.classifier = (OneVsAllClassifier) predictionFunction;
+		this.algorithms = new LearningAlgorithm[this.classifier.getLabels().size()];
+		this.labels = this.classifier.getLabels();
+		for(int i=0; i<this.classifier.getLabels().size(); i++){
+			this.algorithms[i] = this.baseAlgorithm.duplicate();
+			algorithms[i].setLabels(Arrays.asList(labels.get(i)));
+			this.algorithms[i].setPredictionFunction(this.classifier.getBinaryClassifiers()[i]);
+		}
 	}
 	
 }

@@ -22,6 +22,7 @@ import it.uniroma2.sag.kelp.learningalgorithm.KernelMethod;
 import it.uniroma2.sag.kelp.learningalgorithm.classification.ClassificationLearningAlgorithm;
 import it.uniroma2.sag.kelp.learningalgorithm.classification.libsvm.solver.LibCSvmSolver;
 import it.uniroma2.sag.kelp.learningalgorithm.classification.libsvm.solver.SvmSolution;
+import it.uniroma2.sag.kelp.predictionfunction.PredictionFunction;
 import it.uniroma2.sag.kelp.predictionfunction.classifier.BinaryKernelMachineClassifier;
 import it.uniroma2.sag.kelp.predictionfunction.classifier.Classifier;
 import it.uniroma2.sag.kelp.predictionfunction.model.BinaryKernelMachineModel;
@@ -230,6 +231,11 @@ public class BinaryCSvmClassification extends LibCSvmSolver implements
 	@Override
 	public void setKernel(Kernel kernel) {
 		this.kernel = kernel;
+	}
+
+	@Override
+	public void setPredictionFunction(PredictionFunction predictionFunction) {
+		this.classifier = (BinaryKernelMachineClassifier) predictionFunction;
 	}
 
 }

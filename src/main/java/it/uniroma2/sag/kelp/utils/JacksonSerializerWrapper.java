@@ -108,7 +108,7 @@ public class JacksonSerializerWrapper implements ObjectSerializer {
 	private <T> void postDeserializationMethod(T deserializedObject){
 		Method methodToFind = null;
 		try {
-			methodToFind = deserializedObject.getClass().getMethod("initialize", (Class<?>[]) null);
+			methodToFind = deserializedObject.getClass().getMethod("initialize");
 			if(methodToFind != null) {
 				methodToFind.invoke(deserializedObject, (Object[]) null);
 			}
