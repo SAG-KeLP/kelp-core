@@ -84,7 +84,6 @@ public class OneVsAllLearning implements ClassificationLearningAlgorithm, MetaLe
 	}
 		
 	public void initialize() {
-		System.out.println("QUI!");
 		algorithms = new LearningAlgorithm[labels.size()];		
 		Classifier[] binaryClassifier = new Classifier[labels.size()];
 		for(int i=0; i<labels.size(); i++){
