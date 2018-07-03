@@ -453,4 +453,22 @@ public class SparseVector implements Vector {
 		}
 		return true;
 	}
+	
+	
+	public static void setWordCounter(int wordCounter) {
+		SparseVector.wordCounter = wordCounter;
+	}
+
+	public static TIntObjectMap<String> getFromIntToWord() {
+		return fromIntToWord;
+	}
+
+	public static TObjectIntMap<String> getFromWordToInt() {
+		return fromWordToInt;
+	}
+
+	public static int getWordCounter() {
+		return wordCounter;
+	}
+
 }
