@@ -101,6 +101,7 @@ public class OneVsAllLearning implements ClassificationLearningAlgorithm, MetaLe
 		
 	}
 	
+	@Deprecated
 	public void initializeWithPredictionFunction(OneVsAllClassifier oneVsAllClassifier) {
 		algorithms = new LearningAlgorithm[labels.size()];		
 		Classifier[] binaryClassifier = new Classifier[labels.size()];
