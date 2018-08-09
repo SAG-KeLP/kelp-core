@@ -10,6 +10,12 @@
 		<name>Semantic Analytics Group @ Uniroma2</name>
 		<url>http://sag.art.uniroma2.it</url>
 	</organization>
+	<scm>
+		<url>https://github.com/SAG-KeLP/kelp-core</url>
+		<connection>scm:git:https://github.com/SAG-KeLP/kelp-core.git</connection>
+		<developerConnection>scm:git:https://github.com/SAG-KeLP/kelp-core.git</developerConnection>
+	  	<tag>HEAD</tag>
+ 	</scm>
 	<developers>
 		<developer>
 			<id>sfilice</id>
@@ -117,6 +123,14 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+		        	<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<tagNameFormat>version@{project.version}</tagNameFormat>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
