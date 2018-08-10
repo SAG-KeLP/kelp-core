@@ -15,15 +15,6 @@
 
 package it.uniroma2.sag.kelp.learningalgorithm.classification.multiclassification;
 
-import it.uniroma2.sag.kelp.data.dataset.Dataset;
-import it.uniroma2.sag.kelp.data.dataset.SimpleDataset;
-import it.uniroma2.sag.kelp.data.label.Label;
-import it.uniroma2.sag.kelp.learningalgorithm.LearningAlgorithm;
-import it.uniroma2.sag.kelp.learningalgorithm.MetaLearningAlgorithm;
-import it.uniroma2.sag.kelp.learningalgorithm.classification.ClassificationLearningAlgorithm;
-import it.uniroma2.sag.kelp.predictionfunction.classifier.Classifier;
-import it.uniroma2.sag.kelp.predictionfunction.classifier.multiclass.OneVsOneClassifier;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +24,16 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import it.uniroma2.sag.kelp.data.dataset.Dataset;
+import it.uniroma2.sag.kelp.data.dataset.SimpleDataset;
+import it.uniroma2.sag.kelp.data.label.Label;
+import it.uniroma2.sag.kelp.learningalgorithm.LearningAlgorithm;
+import it.uniroma2.sag.kelp.learningalgorithm.MetaLearningAlgorithm;
+import it.uniroma2.sag.kelp.learningalgorithm.classification.ClassificationLearningAlgorithm;
+import it.uniroma2.sag.kelp.predictionfunction.PredictionFunction;
+import it.uniroma2.sag.kelp.predictionfunction.classifier.Classifier;
+import it.uniroma2.sag.kelp.predictionfunction.classifier.multiclass.OneVsOneClassifier;
 
 /**
  * It is a meta algorithm that operates by applying a One-Vs-One strategy over the base 
@@ -190,6 +191,19 @@ public class OneVsOneLearning implements ClassificationLearningAlgorithm, MetaLe
 		OneVsOneLearning copy = new OneVsOneLearning();
 		copy.setBaseAlgorithm(this.baseAlgorithm);		
 		return copy;
+	}
+	
+	@Override
+	public void setPredictionFunction(PredictionFunction predictionFunction) {
+		this.classifier = (OneVsOneClassifier) predictionFunction;
+		this.algorithms = new LearningAlgorithm[this.classifier.getLabels().size()];
+		this.labels = this.classifier.getLabels();
+		this.negatives = this.classifier.getNegativeLabelsForClassifier();
+		for(int i=0; i<this.classifier.getLabels().size(); i++){
+			this.algorithms[i] = this.baseAlgorithm.duplicate();
+			algorithms[i].setLabels(Arrays.asList(labels.get(i)));
+			this.algorithms[i].setPredictionFunction(this.classifier.getBinaryClassifiers()[i]);
+		}
 	}
 
 

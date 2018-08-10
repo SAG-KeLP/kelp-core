@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.util.zip.GZIPOutputStream;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -51,19 +52,25 @@ public class JacksonSerializerWrapper implements ObjectSerializer {
 	@Override
 	public <T> T readValue(String content, Class<T> valueType)
 			throws IOException, JsonParseException, JsonMappingException {
-		return mapper.readValue(content, valueType);
+		T object = mapper.readValue(content, valueType);
+		this.postDeserializationMethod(object);
+		return object;
 	}
 	
 	@Override
 	public <T> T readValue(File file, Class<T> valueType) throws IOException,
 			JsonParseException, JsonMappingException {
-		return mapper.readValue(file, valueType);
+		T object = mapper.readValue(file, valueType);
+		this.postDeserializationMethod(object);
+		return object;
 	}
 	
 	@Override
 	public <T> T readValue(InputStream inputStream, Class<T> valueType) throws IOException,
 			JsonParseException, JsonMappingException {
-		return mapper.readValue(inputStream, valueType);
+		T object = mapper.readValue(inputStream, valueType);
+		this.postDeserializationMethod(object);
+		return object;
 	}
 
 	@Override
@@ -96,6 +103,18 @@ public class JacksonSerializerWrapper implements ObjectSerializer {
 		out.flush();
 		out.close();
 
+	}
+	
+	private <T> void postDeserializationMethod(T deserializedObject){
+		Method methodToFind = null;
+		try {
+			methodToFind = deserializedObject.getClass().getMethod("initialize");
+			if(methodToFind != null) {
+				methodToFind.invoke(deserializedObject, (Object[]) null);
+			}
+		} catch (Exception e) {
+			// There is no postDeserialization method to be invoked
+		}
 	}
 
 }

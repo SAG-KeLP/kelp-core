@@ -23,6 +23,7 @@ import it.uniroma2.sag.kelp.learningalgorithm.KernelMethod;
 import it.uniroma2.sag.kelp.learningalgorithm.classification.libsvm.solver.LibCSvmSolver;
 import it.uniroma2.sag.kelp.learningalgorithm.classification.libsvm.solver.SvmSolution;
 import it.uniroma2.sag.kelp.learningalgorithm.regression.RegressionLearningAlgorithm;
+import it.uniroma2.sag.kelp.predictionfunction.PredictionFunction;
 import it.uniroma2.sag.kelp.predictionfunction.regressionfunction.RegressionFunction;
 import it.uniroma2.sag.kelp.predictionfunction.regressionfunction.UnivariateKernelMachineRegressionFunction;
 
@@ -264,5 +265,10 @@ public class EpsilonSvmRegression extends LibCSvmSolver implements
 		super.swap(G_bar, i, j);
 
 		super.swap(QD, i, j);
+	}
+
+	@Override
+	public void setPredictionFunction(PredictionFunction predictionFunction) {
+		this.regressor = (UnivariateKernelMachineRegressionFunction) predictionFunction;
 	}
 }

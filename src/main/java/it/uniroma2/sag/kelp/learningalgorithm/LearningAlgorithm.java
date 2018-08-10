@@ -80,4 +80,12 @@ public interface LearningAlgorithm{
 	 */
 	@JsonIgnore
 	public PredictionFunction getPredictionFunction();
+	
+	/**
+	 * Sets the predictionFunction learned during the training process. It can 
+	 * be used to change the default prediction function, or to set an already 
+	 * trained one. 
+	 */
+	@JsonIgnore
+	public void setPredictionFunction(PredictionFunction predictionFunction);
 }
