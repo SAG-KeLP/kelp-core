@@ -185,6 +185,7 @@ public class OneVsAllLearning implements ClassificationLearningAlgorithm, MetaLe
 	public OneVsAllLearning duplicate(){
 		OneVsAllLearning copy = new OneVsAllLearning();
 		copy.setBaseAlgorithm(this.baseAlgorithm);		
+		copy.setLabels(this.getLabels());
 		return copy;
 	}
 
