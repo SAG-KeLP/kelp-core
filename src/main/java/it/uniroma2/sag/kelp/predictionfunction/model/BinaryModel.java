@@ -24,6 +24,10 @@ import it.uniroma2.sag.kelp.data.example.Example;
  */
 public abstract class BinaryModel implements Model{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8658231051492118776L;
 	protected float bias;
 
 	

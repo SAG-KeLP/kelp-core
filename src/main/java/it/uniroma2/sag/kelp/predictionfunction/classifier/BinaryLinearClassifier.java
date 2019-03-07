@@ -33,6 +33,11 @@ import it.uniroma2.sag.kelp.predictionfunction.model.Model;
 @JsonTypeName("linearClassifier")
 public class BinaryLinearClassifier extends BinaryClassifier{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2144462985407087512L;
+
 	private Logger logger = LoggerFactory.getLogger(BinaryClassifier.class);
 	
 	private BinaryLinearModel model;	

@@ -41,6 +41,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("multilabelClassifier")
 public class MultiLabelClassifier implements Classifier{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4817204249109000799L;
 	private Classifier [] binaryClassifiers;
 	private List<Label> labels;
 	private MulticlassModel model;

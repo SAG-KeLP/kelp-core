@@ -31,6 +31,11 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 public class BinaryLinearModel extends BinaryModel{
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5849584790622696061L;
+
 	private Vector hyperplane;
 
 	private String representation;

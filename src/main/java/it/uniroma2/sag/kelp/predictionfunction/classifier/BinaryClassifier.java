@@ -33,6 +33,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class BinaryClassifier implements Classifier{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5020938214461209068L;
 	protected Label positiveClass;
 	
 	/**

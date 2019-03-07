@@ -29,6 +29,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("kernelMachineClassifier")
 public class BinaryKernelMachineClassifier extends BinaryClassifier{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8887773797913062952L;
 	private BinaryKernelMachineModel model;
 	
 	public BinaryKernelMachineClassifier(){

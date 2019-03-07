@@ -31,6 +31,10 @@ import it.uniroma2.sag.kelp.predictionfunction.model.BinaryModel;
  */
 public abstract class UnivariateRegressionFunction implements RegressionFunction{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3574945060218624003L;
 	protected Label property;
 	
 	/**

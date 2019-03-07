@@ -32,6 +32,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("linearRegressor")
 public class UnivariateLinearRegressionFunction extends UnivariateRegressionFunction{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1139097921112076692L;
 	private BinaryLinearModel model;
 	
 	@Override

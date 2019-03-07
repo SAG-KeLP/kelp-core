@@ -28,6 +28,10 @@ import java.util.List;
 public class MulticlassModel implements Model{
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4503770841547110120L;
 	protected List<Label> labels;
 	private List<BinaryModel> models;
 	

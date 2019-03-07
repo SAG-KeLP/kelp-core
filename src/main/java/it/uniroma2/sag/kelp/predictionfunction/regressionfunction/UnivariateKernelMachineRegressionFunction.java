@@ -33,6 +33,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("kernelMachineRegressor")
 public class UnivariateKernelMachineRegressionFunction extends UnivariateRegressionFunction{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5930264550708254084L;
 	private BinaryKernelMachineModel model;
 
 	public UnivariateKernelMachineRegressionFunction(){

@@ -40,6 +40,11 @@ import it.uniroma2.sag.kelp.predictionfunction.model.MulticlassModel;
  */
 @JsonTypeName("oneVsOneClassifier")
 public class OneVsOneClassifier implements Classifier{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8994158964015008617L;
+
 	private Logger logger = LoggerFactory.getLogger(OneVsOneClassifier.class);
 	
 	private Classifier [] binaryClassifiers;

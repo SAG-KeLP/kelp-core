@@ -40,6 +40,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("oneVsAllClassifier")
 public class OneVsAllClassifier implements Classifier{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2682311847219039364L;
 	private Classifier [] binaryClassifiers;
 	private List<Label> labels;
 	private MulticlassModel model;

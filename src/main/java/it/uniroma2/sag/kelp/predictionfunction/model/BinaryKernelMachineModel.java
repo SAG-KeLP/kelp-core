@@ -35,6 +35,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("binarykernelmodel")
 public class BinaryKernelMachineModel extends BinaryModel implements KernelMachineModel{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8424847852892233503L;
 	private Kernel kernel = null;
 	private List<SupportVector> supportVectors;
 	
