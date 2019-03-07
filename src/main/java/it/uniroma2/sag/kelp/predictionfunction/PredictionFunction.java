@@ -15,6 +15,7 @@
 
 package it.uniroma2.sag.kelp.predictionfunction;
 
+import java.io.Serializable;
 import java.util.List;
 
 import it.uniroma2.sag.kelp.data.example.Example;
@@ -33,7 +34,7 @@ import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonTypeIdResolver(PredictionFunctionTypeResolver.class)
-public interface PredictionFunction {
+public interface PredictionFunction extends Serializable{
 
 	public Prediction predict(Example example);
 	

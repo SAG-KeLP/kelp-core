@@ -15,6 +15,8 @@
 
 package it.uniroma2.sag.kelp.predictionfunction.model;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
@@ -23,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author      Simone Filice
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
-public interface Model {
+public interface Model extends Serializable{
 
 	/**
 	 * Resets the model parameters to the default state. All the
