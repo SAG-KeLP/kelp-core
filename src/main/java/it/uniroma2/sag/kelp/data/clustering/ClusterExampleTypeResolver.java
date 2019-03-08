@@ -25,11 +25,11 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
  * It is a class implementing <code>TypeIdResolver</code> which will be used by
@@ -93,12 +93,11 @@ public class ClusterExampleTypeResolver implements TypeIdResolver {
 	}
 
 	@Override
-	public JavaType typeFromId(String arg0) {
+	public JavaType typeFromId(DatabindContext context, String arg0) {
 
 		Class<? extends ClusterExample> clazz = idToClassMapping.get(arg0);
 		if (clazz != null) {
-			JavaType type = TypeFactory.defaultInstance()
-					.constructSpecializedType(mBaseType, clazz);
+			JavaType type = context.constructSpecializedType(mBaseType, clazz);
 			return type;
 		}
 		throw new IllegalStateException("cannot find mapping for '" + arg0
@@ -110,4 +109,8 @@ public class ClusterExampleTypeResolver implements TypeIdResolver {
 		return classToIdMapping.get(arg0.getClass());
 	}
 
+	@Override
+	public String getDescForKnownTypeIds() {
+		return "";
+	}
 }

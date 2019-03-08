@@ -15,6 +15,7 @@
 
 package it.uniroma2.sag.kelp.predictionfunction;
 
+import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,9 +27,9 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
  * It is a class implementing <code>TypeIdResolver</code> which will be used by Jackson library during
@@ -37,7 +38,12 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
  * @author Simone Filice
  *
  */
-public class PredictionFunctionTypeResolver implements TypeIdResolver{
+public class PredictionFunctionTypeResolver implements TypeIdResolver, Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8031815029154965348L;
 
 	private final static Logger logger = LoggerFactory.getLogger(PredictionFunctionTypeResolver.class);
 
@@ -91,11 +97,10 @@ public class PredictionFunctionTypeResolver implements TypeIdResolver{
 	}
 
 	@Override
-	public JavaType typeFromId(String arg0) {
-
+	public JavaType typeFromId(DatabindContext context, String arg0) {
 		Class<? extends PredictionFunction> clazz = idToClassMapping.get(arg0);
 		if(clazz!=null){
-			JavaType type = TypeFactory.defaultInstance().constructSpecializedType(mBaseType, clazz);
+			JavaType type = context.constructSpecializedType(mBaseType, clazz);
 			return type;
 		}
 		throw new IllegalStateException("cannot find mapping for '" + arg0 + "'");
@@ -104,6 +109,11 @@ public class PredictionFunctionTypeResolver implements TypeIdResolver{
 	@Override
 	public String idFromValueAndType(Object arg0, Class<?> arg1) {		
 		return classToIdMapping.get(arg0.getClass());
+	}
+
+	@Override
+	public String getDescForKnownTypeIds() {
+		return "";
 	}
 
 }
