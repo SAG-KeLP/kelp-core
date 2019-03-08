@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.zip.GZIPOutputStream;
 
 import it.uniroma2.sag.kelp.data.example.Example;
 import it.uniroma2.sag.kelp.utils.FileUtils;
@@ -35,8 +34,6 @@ import it.uniroma2.sag.kelp.utils.FileUtils;
 public class SequenceDatasetWriter {
 
 	private BufferedWriter writer;
-	private GZIPOutputStream zip;
-	private String outputFilePath;
 
 	/**
 	 * @param outputFilePath
@@ -45,7 +42,6 @@ public class SequenceDatasetWriter {
 	 * @throws IOException
 	 */
 	public SequenceDatasetWriter(String outputFilePath) throws FileNotFoundException, IOException {
-		this.outputFilePath = outputFilePath;
 		OutputStream outputStream = FileUtils.createOutputStream(outputFilePath);
 		this.writer = new BufferedWriter(new OutputStreamWriter(outputStream));
 	}
@@ -57,9 +53,6 @@ public class SequenceDatasetWriter {
 	 */
 	public void close() throws IOException {
 		writer.close();
-		if (outputFilePath.endsWith(".gz")) {
-			zip.close();
-		}
 	}
 
 	/**
