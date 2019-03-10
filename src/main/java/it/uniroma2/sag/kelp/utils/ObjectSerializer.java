@@ -18,6 +18,7 @@ package it.uniroma2.sag.kelp.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -30,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  * @author Simone Filice, Danilo Croce
  *
  */
-public interface ObjectSerializer {
+public interface ObjectSerializer extends Serializable{
 	
 	/**
 	 * Converts an object into a textual representation, preserving all the object properties.

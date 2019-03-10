@@ -40,6 +40,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  *
  */
 public class JacksonSerializerWrapper implements ObjectSerializer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8582622185142682323L;
 	private static ObjectMapper mapper;
 	private static final ObjectWriter ow;
 	static {
