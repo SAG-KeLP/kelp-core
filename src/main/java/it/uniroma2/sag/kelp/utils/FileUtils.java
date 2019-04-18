@@ -18,6 +18,7 @@ package it.uniroma2.sag.kelp.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,11 +42,19 @@ public class FileUtils {
 	 * @return the input stream associated to the file specified in <code>filePath</code>
 	 * @throws IOException
 	 */
-	public static InputStream createInputStream(String filePath) throws IOException{
+	@SuppressWarnings("resource")
+	public static InputStream createInputStream(String filePath) throws IOException {
+		InputStream is = null;
+		try {
+			is = new FileInputStream(new File(filePath));
+		} catch (FileNotFoundException e) {
+			ClassLoader classLoader = FileUtils.class.getClassLoader();
+			is = classLoader.getResourceAsStream(filePath);
+		}
 		if (filePath.endsWith(".gz")) {
-			return new GZIPInputStream(new FileInputStream(new File(filePath)));
+			return new GZIPInputStream(is);
 		} else {
-			return new FileInputStream(new File(filePath));
+			return is;
 		}
 	}
 	
