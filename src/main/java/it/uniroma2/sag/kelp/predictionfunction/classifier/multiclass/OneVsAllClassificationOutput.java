@@ -33,6 +33,10 @@ import java.util.List;
  */
 public class OneVsAllClassificationOutput implements ClassificationOutput{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7082075004120552162L;
 	private HashMap<Label, Float> binaryOutputs;
 	private Label argmax;
 	

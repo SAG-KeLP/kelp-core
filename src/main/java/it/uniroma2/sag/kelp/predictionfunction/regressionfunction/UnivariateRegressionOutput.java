@@ -30,6 +30,10 @@ import it.uniroma2.sag.kelp.data.label.NumericLabel;
  */
 public class UnivariateRegressionOutput implements RegressionOutput{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8980788527164744118L;
 	private NumericLabel result;
 
 	public UnivariateRegressionOutput(NumericLabel result){

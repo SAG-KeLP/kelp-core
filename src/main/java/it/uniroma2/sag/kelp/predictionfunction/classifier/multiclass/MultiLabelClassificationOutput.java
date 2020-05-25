@@ -33,6 +33,10 @@ import it.uniroma2.sag.kelp.predictionfunction.classifier.ClassificationOutput;
  */
 public class MultiLabelClassificationOutput implements ClassificationOutput{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4994436751696624509L;
 	private HashMap<Label, Float> binaryOutputs;
 	private List<Label> predictedClasses;
 

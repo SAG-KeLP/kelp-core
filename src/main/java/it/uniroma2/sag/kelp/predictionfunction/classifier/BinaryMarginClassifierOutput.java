@@ -30,6 +30,10 @@ import java.util.List;
  */
 public class BinaryMarginClassifierOutput implements ClassificationOutput{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1232325405715601010L;
 	private Label positiveClass;
 	private float prediction;
 	

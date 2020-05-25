@@ -30,6 +30,10 @@ import java.util.List;
  *
  */
 public class OneVsOneClassificationOutput implements ClassificationOutput {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5009055638941278382L;
 	private HashMap<Label, Integer> counter = new HashMap<Label, Integer>();
 	private HashMap<Label, Float> maxMarginForLabel = new HashMap<Label, Float>();
 	private HashMap<Label, ArrayList<Float>> scoresForLabel = new HashMap<Label, ArrayList<Float>>();

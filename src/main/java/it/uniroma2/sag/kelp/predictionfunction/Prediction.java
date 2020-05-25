@@ -15,6 +15,8 @@
 
 package it.uniroma2.sag.kelp.predictionfunction;
 
+import java.io.Serializable;
+
 import it.uniroma2.sag.kelp.data.label.Label;
 
 /**
@@ -22,7 +24,7 @@ import it.uniroma2.sag.kelp.data.label.Label;
  * 
  * @author      Simone Filice
  */
-public interface Prediction {
+public interface Prediction extends Serializable{
 	
 	/**
 	 * Return the prediction score associated to a given label
